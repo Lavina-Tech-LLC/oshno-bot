@@ -1,0 +1,11 @@
+database:
+  dbname: oshno_db
+  dbuser: postgres
+  dbpassword: password
+  dbhost: localhost
+  dbport: 5432
+  dbtimezone: Asia/Tashkent
+
+telegram:
+  telegramtoken: 6785340587:AAEB2tcCgrd3o196hP5_1PE5a_AHj-hzfvc
+  telegramgroupid: -4076268812
