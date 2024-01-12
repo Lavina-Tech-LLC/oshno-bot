@@ -31,7 +31,7 @@ func (h BotHandler) Start(c tele.Context) error {
 		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 	}
 
-	return c.Send("Для регистрации поделитесь своим номер телефона: aa", models.PhoneMarkup)
+	return c.Send("Для регистрации поделитесь своим номер телефона: ", models.PhoneMarkup)
 }
 
 func (h BotHandler) Contact(c tele.Context) error {
