@@ -79,7 +79,7 @@ func InitLanguage() {
 		ResizeKeyboard: true,
 	}
 
-	BtnTg = LanguageMarkup.Text(fmt.Sprintf("%s Таджийский", emoji.FlagForTajikistan))
+	BtnTg = LanguageMarkup.Text(fmt.Sprintf("%s Тоҷикӣ", emoji.FlagForTajikistan))
 	BtnRu = LanguageMarkup.Text(fmt.Sprintf("%s Русский", emoji.FlagForRussia))
 }
 
