@@ -76,7 +76,7 @@ var ConstMessages = Languages{
 		YourLocation:           "Ваш адрес:\n <b>%s</b>",
 		RequestProvider:        "Выберите провайдера",
 		ChooseService:          "Выберите необходимую услугу",
-		EnterFirstName:         "Введите ваше имя и фамилию",
+		EnterFirstName:         "Введите ваши имя и фамилию",
 		EnterLastName:          "Укажите вашу фаимлию: ",
 		EnterMiddleName:        "Укажите вашу отчество: ",
 		EnterDateBirth:         "Укажите вашу дату рождение: дд-мм-гггг",
