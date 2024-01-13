@@ -159,21 +159,7 @@ func (h BotHandler) ChangeTariff(provider, service string) func(c tele.Context) 
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
-		h.logger.Info("onText started", zap.Uint("userId", user.ID), zap.String("userLanguage", user.Language), zap.String("provider", provider))
-
-		lastRequest, err := h.storage.GetLastFilledRequestUser(user.ID)
-		if err != nil {
-			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-		}
-
-		if !lastRequest.IsFilled || provider != lastRequest.Provider {
-			switch user.Language {
-			case constants.Tajik:
-				return c.Send(constants.ConstMessages[constants.Tajik][constants.NotSelectebleTarif])
-			default:
-				return c.Send(constants.ConstMessages[constants.Russian][constants.NotSelectebleTarif])
-			}
-		}
+		h.logger.Info("change tariff service started", zap.Uint("userId", user.ID), zap.String("userLanguage", user.Language), zap.String("provider", provider))
 
 		err = h.createRequest(int(user.ID), provider, service)
 		if err != nil {
@@ -182,9 +168,9 @@ func (h BotHandler) ChangeTariff(provider, service string) func(c tele.Context) 
 
 		switch user.Language {
 		case constants.Tajik:
-			return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPersonalAccount], models.DisplayMarkupTg)
+			return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterFirstName], models.DisplayMarkupTg)
 		default:
-			return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPersonalAccount], models.DisplayMarkupRu)
+			return c.Send(constants.ConstMessages[constants.Russian][constants.EnterFirstName], models.DisplayMarkupRu)
 		}
 	}
 }
@@ -196,21 +182,7 @@ func (h BotHandler) ConnectAdditional(provider, service string) func(c tele.Cont
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
-		h.logger.Info("onText started", zap.Uint("userId", user.ID), zap.String("userLanguage", user.Language), zap.String("provider", provider))
-
-		lastRequest, err := h.storage.GetLastFilledRequestUser(user.ID)
-		if err != nil {
-			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-		}
-
-		if !lastRequest.IsFilled || provider != lastRequest.Provider {
-			switch user.Language {
-			case constants.Tajik:
-				return c.Send(constants.ConstMessages[constants.Tajik][constants.NotSelectebleAddTarif])
-			default:
-				return c.Send(constants.ConstMessages[constants.Russian][constants.NotSelectebleAddTarif])
-			}
-		}
+		h.logger.Info("connect additional started", zap.Uint("userId", user.ID), zap.String("userLanguage", user.Language), zap.String("provider", provider))
 
 		err = h.createRequest(int(user.ID), provider, service)
 		if err != nil {
@@ -219,9 +191,9 @@ func (h BotHandler) ConnectAdditional(provider, service string) func(c tele.Cont
 
 		switch user.Language {
 		case constants.Tajik:
-			return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPersonalAccount], models.DisplayMarkupTg)
+			return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterFirstName], models.DisplayMarkupTg)
 		default:
-			return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPersonalAccount], models.DisplayMarkupRu)
+			return c.Send(constants.ConstMessages[constants.Russian][constants.EnterFirstName], models.DisplayMarkupRu)
 		}
 	}
 }

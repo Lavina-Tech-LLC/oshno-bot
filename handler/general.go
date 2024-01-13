@@ -65,11 +65,25 @@ func (h BotHandler) Contact(c tele.Context) error {
 		if err != nil {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
+		if request.Service == constants.ServiceConnectProviderRu {
+			h.storage.UpdatePhase(user.ID, 4)
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
+
+			switch user.Language {
+			case constants.Tajik:
+				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress], models.DisplayMarkupTg)
+			default:
+				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterAddress], models.DisplayMarkupRu)
+			}
+		}
+
 		switch user.Language {
 		case constants.Tajik:
-			return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress], models.DisplayMarkupTg)
+			return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPersonalAccount], models.DisplayMarkupTg)
 		default:
-			return c.Send(constants.ConstMessages[constants.Russian][constants.EnterAddress], models.DisplayMarkupRu)
+			return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPersonalAccount], models.DisplayMarkupRu)
 		}
 	}
 
@@ -197,14 +211,65 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 			}
 
+			request, err := h.storage.GetLastRequestUser(user.ID)
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
+
+			if request.Service == constants.ServiceConnectProviderRu {
+				h.storage.UpdatePhase(user.ID, 4)
+				if err != nil {
+					return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+				}
+
+				switch user.Language {
+				case constants.Tajik:
+					return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress], models.DisplayMarkupTg)
+				default:
+					return c.Send(constants.ConstMessages[constants.Russian][constants.EnterAddress], models.DisplayMarkupRu)
+				}
+			}
+			switch user.Language {
+			case constants.Tajik:
+				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPersonalAccount], models.DisplayMarkupTg)
+			default:
+				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPersonalAccount], models.DisplayMarkupRu)
+			}
+		case 3:
+
+			err := h.updateRequest(message, 3, user.ID)
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
+
+			request, err := h.storage.GetLastRequestUser(user.ID)
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
+
+			if request.Service == constants.ServiceChangeTariffRu {
+				err = h.storage.UpdatePhase(user.ID, 5)
+				if err != nil {
+					return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+				}
+
+				switch user.Language {
+				case constants.Tajik:
+					return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPreferPlanTariff], models.PlanStatusMarkupToj)
+				default:
+					return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPreferPlanTariff], models.PlanStatusMarkupRu)
+				}
+			}
+
 			switch user.Language {
 			case constants.Tajik:
 				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress])
 			default:
 				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterAddress])
 			}
-		case 3:
-			err := h.updateRequest(message, 3, user.ID)
+
+		case 4:
+			err := h.updateRequest(message, 4, user.ID)
 			if err != nil {
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 			}
@@ -215,6 +280,7 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			default:
 				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPreferPlanTariff], models.PlanStatusMarkupRu)
 			}
+
 			/*
 				case 4:
 					validated := utils.ValidateDateBirth(message)
@@ -310,30 +376,6 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 						return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPassportFront])
 					}
 			*/
-		case 6:
-
-			request, err := h.storage.GetLastRequestUser(user.ID)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			request.PersonalAccount = message
-			err = h.storage.UpdateRequest(request.ID, request)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			err = h.storage.UpdatePhase(user.ID, 7)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			switch user.Language {
-			case constants.Tajik:
-				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPreferPlanTariff], models.PlanStatusMarkupToj)
-			default:
-				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPreferPlanTariff], models.PlanStatusMarkupRu)
-			}
 		case 9:
 			request, err := h.storage.GetLastRequestUser(user.ID)
 			if err != nil {
@@ -545,6 +587,8 @@ func (h BotHandler) updateRequest(message string, phase, userId uint) error {
 	case 2:
 		request.PhoneNumber = message
 	case 3:
+		request.PersonalAccount = message
+	case 4:
 		request.Address = message
 	}
 
@@ -593,14 +637,30 @@ func confirmMessageTg(payload models.Request) string {
 
 	switch payload.Service {
 	case constants.ServiceConnectProviderRu:
-		service = "1"
-	case constants.ServiceChangeTariffRu:
-		service = "2"
-	case constants.ServiceConnectAdditionalTariffRu:
-		service = "3"
-	}
+		service = constants.ServiceConnectProviderTg
 
-	if payload.Service != constants.ServiceConnectProviderRu {
+		return fmt.Sprintf("Провайдер: %s\nХизмат: %s\nНом ва насаб: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\n",
+			payload.Provider,
+			service,
+			payload.FullName,
+			payload.PhoneNumber,
+			payload.Address,
+			payload.Plan,
+		)
+
+	case constants.ServiceChangeTariffRu:
+		service = constants.ServiceChangeTariffTg
+		return fmt.Sprintf("Провайдер: %s\nХизмат: %s\nНом ва насаб: %s\nРақами мобилӣ: %s\nПлан: %s\nҲисоби шахсӣ: %s\n",
+			payload.Provider,
+			service,
+			payload.FullName,
+			payload.PhoneNumber,
+			payload.Plan,
+			payload.PersonalAccount,
+		)
+
+	case constants.ServiceConnectAdditionalTariffRu:
+		service = constants.ServiceConnectAdditionalTariffTg
 		return fmt.Sprintf("Провайдер: %s\nХизмат: %s\nНом ва насаб: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\nҲисоби шахсӣ: %s\n",
 			payload.Provider,
 			service,
@@ -610,7 +670,9 @@ func confirmMessageTg(payload models.Request) string {
 			payload.Plan,
 			payload.PersonalAccount,
 		)
+
 	}
+
 	return fmt.Sprintf("Провайдер: %s\nХизмат: %s\nНом ва насаб: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\n",
 		payload.Provider,
 		service,
@@ -622,7 +684,27 @@ func confirmMessageTg(payload models.Request) string {
 }
 
 func confirmMessageRu(payload models.Request) string {
-	if payload.Service != constants.ServiceConnectProviderRu {
+	switch payload.Service {
+	case constants.ServiceConnectProviderRu:
+		return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя м фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
+			payload.Provider,
+			payload.Service,
+			payload.FullName,
+			payload.PhoneNumber,
+			payload.Address,
+			payload.Plan,
+		)
+	case constants.ServiceChangeTariffRu:
+		return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя и фамилия: %s\nНомер телефона: %s\nТариф: %s\nЛицевой счёт: %s\n",
+			payload.Provider,
+			payload.Service,
+			payload.FullName,
+			payload.PhoneNumber,
+			payload.Plan,
+			payload.PersonalAccount,
+		)
+
+	case constants.ServiceConnectAdditionalTariffRu:
 		return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
 			payload.Provider,
 			payload.Service,
@@ -633,6 +715,7 @@ func confirmMessageRu(payload models.Request) string {
 			payload.PersonalAccount,
 		)
 	}
+
 	return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя м фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
 		payload.Provider,
 		payload.Service,
@@ -644,8 +727,30 @@ func confirmMessageRu(payload models.Request) string {
 }
 
 func newRequestMessageToGroup(rq models.Request) string {
-	if rq.Service != constants.ServiceConnectProviderRu {
-		return fmt.Sprintf("Новая заявка на провайдер %s услуга %s\nАйди заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
+	switch rq.Service {
+	case constants.ServiceConnectProviderRu:
+		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\n",
+			rq.Provider,
+			rq.Service,
+			rq.ID,
+			rq.FullName,
+			rq.PhoneNumber,
+			rq.Address,
+			rq.Plan,
+		)
+	case constants.ServiceChangeTariffRu:
+		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nТариф: %s\nЛицевой счёт: %s\n",
+			rq.Provider,
+			rq.Service,
+			rq.ID,
+			rq.FullName,
+			rq.PhoneNumber,
+			rq.Plan,
+			rq.PersonalAccount,
+		)
+
+	case constants.ServiceConnectAdditionalTariffRu:
+		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
 			rq.Provider,
 			rq.Service,
 			rq.ID,
@@ -656,7 +761,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 			rq.PersonalAccount,
 		)
 	}
-	return fmt.Sprintf("Новая заявка на провайдер %s услуга %s\nАйди заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\n",
+	return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\n",
 		rq.Provider,
 		rq.Service,
 		rq.ID,

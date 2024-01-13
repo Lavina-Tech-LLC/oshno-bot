@@ -129,15 +129,15 @@ func InitOshnoProvider() {
 		ResizeKeyboard: true,
 	}
 
-	BtnOshSerConnectProviderRu = OshnoProviderMarkupRu.Text("Подключится к провайдеру")
+	BtnOshSerConnectProviderRu = OshnoProviderMarkupRu.Text("Подключиться к провайдеру")
 	BtnOshSerChangeTariffRu = OshnoProviderMarkupRu.Text("Сменить тариф")
 	BtnOshSerConnectAddittionalRu = OshnoProviderMarkupRu.Text("Подключить дополнительную точку")
 	BtnBackProviderRu = OshnoProviderMarkupRu.Text(fmt.Sprintf("%sНазɑд", emoji.BackArrow))
 	BtnMenuProviderRu = OshnoProviderMarkupRu.Text(fmt.Sprintf("%sМеню", emoji.House))
 
-	BtnOshSerConnectProviderTg = OshnoProviderMarkupTg.Text("Провайдери пайваст кунед Ошно")
-	BtnOshSerChangeTariffTg = OshnoProviderMarkupTg.Text("Тағйир додани қурби Ошно")
-	BtnOshSerConnectAddittionalTg = OshnoProviderMarkupTg.Text("Пайвастшавӣ ба нархи иловагӣ Ошно")
+	BtnOshSerConnectProviderTg = OshnoProviderMarkupTg.Text("Ба провайдери худ пайваст шавед")
+	BtnOshSerChangeTariffTg = OshnoProviderMarkupTg.Text("Тарифро иваз кунед")
+	BtnOshSerConnectAddittionalTg = OshnoProviderMarkupTg.Text("Нуқтаи иловагиро пайваст кунед")
 	BtnBackProviderTg = OshnoProviderMarkupTg.Text(fmt.Sprintf("%sБозгɑшт", emoji.BackArrow))
 	BtnMenuProviderTg = OshnoProviderMarkupTg.Text(fmt.Sprintf("%sМеню", emoji.House))
 
@@ -152,15 +152,16 @@ func InitTojNetProvider() {
 		ResizeKeyboard: true,
 	}
 
-	BtnTojNetConnectProviderRu = TojNetProviderMarkupRu.Text("Пoдключится к провайдеру")           // first 'o' leter in enlish keyword
+	BtnTojNetConnectProviderRu = TojNetProviderMarkupRu.Text("Пoдключиться к провайдеру")          // first 'o' leter in enlish keyword
 	BtnTojNetChangeTariffRu = TojNetProviderMarkupRu.Text("Смeнить тариф")                         // first 'e' leter in enlish keyword
 	BtnTojNetConnectAddittionalRu = TojNetProviderMarkupRu.Text("Пoдключить дополнительную точку") // first 'o' leter in enlish keyword
 	BtnBackTojRu = TojNetProviderMarkupRu.Text(fmt.Sprintf("%sНɑзɑд", emoji.BackArrow))
 	BtnMenuTojRu = TojNetProviderMarkupRu.Text(fmt.Sprintf("%sМеню", emoji.House))
 
-	BtnTojNetConnectProviderTg = TojNetProviderMarkupTg.Text("Провайдери пайваст кунед TojNet")
-	BtnTojNetChangeTariffTg = TojNetProviderMarkupTg.Text("Тағйир додани қурби TojNet")
-	BtnTojNetConnectAddittionalTg = TojNetProviderMarkupTg.Text("Пайвастшавӣ ба нархи иловагӣ TojNet")
+	BtnTojNetConnectProviderTg = TojNetProviderMarkupTg.Text("Бa провайдери худ пайваст шавед")   // first 'a' leter in enlish keyword
+	BtnTojNetChangeTariffTg = TojNetProviderMarkupTg.Text("Тaрифро иваз кунед")                   // first 'a' leter in enlish keyword
+	BtnTojNetConnectAddittionalTg = TojNetProviderMarkupTg.Text("Нуқтaи иловагиро пайваст кунед") // first 'a' leter in enlish keyword
+
 	BtnBackTojTg = TojNetProviderMarkupTg.Text(fmt.Sprintf("%sБoзгaшт", emoji.BackArrow)) // ac -> is russian letters
 	BtnMenuTojTg = TojNetProviderMarkupTg.Text(fmt.Sprintf("%sМеню", emoji.House))
 

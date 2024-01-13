@@ -18,7 +18,7 @@ func (h BotHandler) PlanBtn(planNumber int) func(c tele.Context) error {
 
 		h.logger.Info("select plan started", zap.Any("user", user), zap.Int("plan number", planNumber))
 
-		if user.UserPhase != 4 && user.UserPhase != 7 && user.UserPhase != 10 {
+		if user.UserPhase != 5 && user.UserPhase != 7 && user.UserPhase != 10 {
 			return nil
 		}
 
@@ -34,7 +34,7 @@ func (h BotHandler) PlanBtn(planNumber int) func(c tele.Context) error {
 		}
 
 		switch user.UserPhase {
-		case 4:
+		case 5:
 			err = h.storage.UpdateRequest(request.ID, request)
 			if err != nil {
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)

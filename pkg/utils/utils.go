@@ -56,9 +56,9 @@ func UserPhaseToService(service string) int {
 	case constants.ServiceConnectProviderRu:
 		return 1
 	case constants.ServiceChangeTariffRu:
-		return 6
+		return 1
 	case constants.ServiceConnectAdditionalTariffRu:
-		return 9
+		return 1
 	default:
 		return 0
 	}
