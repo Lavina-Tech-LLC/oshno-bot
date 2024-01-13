@@ -172,12 +172,12 @@ func setButtons() {
 
 	models.RequestProviderMarkupRu.Reply(
 		models.RequestProviderMarkupRu.Row(models.BtnOshnoServiceRu, models.BtnTojNetRu),
-		models.RequestProviderMarkupRu.Row(models.BtnBackRequestProviderRu, models.BtnMenuRequestProviderRu),
+		models.RequestProviderMarkupRu.Row(models.BtnMenuRequestProviderRu),
 	)
 
 	models.RequestProviderMarkupTg.Reply(
 		models.RequestProviderMarkupTg.Row(models.BtnOshnoServiceTg, models.BtnTojNetTg),
-		models.RequestProviderMarkupTg.Row(models.BtnBackRequestProviderTg, models.BtnMenuRequestProviderTg),
+		models.RequestProviderMarkupTg.Row(models.BtnMenuRequestProviderTg),
 	)
 
 	models.OshnoProviderMarkupRu.Reply(

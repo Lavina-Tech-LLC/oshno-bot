@@ -129,9 +129,9 @@ func InitOshnoProvider() {
 		ResizeKeyboard: true,
 	}
 
-	BtnOshSerConnectProviderRu = OshnoProviderMarkupRu.Text("Подключить провайдер Oshno")
-	BtnOshSerChangeTariffRu = OshnoProviderMarkupRu.Text("Изменить тариф Oshno")
-	BtnOshSerConnectAddittionalRu = OshnoProviderMarkupRu.Text("Подключить дополнительный тариф Oshno")
+	BtnOshSerConnectProviderRu = OshnoProviderMarkupRu.Text("Подключится к провайдеру")
+	BtnOshSerChangeTariffRu = OshnoProviderMarkupRu.Text("Сменить тариф")
+	BtnOshSerConnectAddittionalRu = OshnoProviderMarkupRu.Text("Подключить дополнительную точку")
 	BtnBackProviderRu = OshnoProviderMarkupRu.Text(fmt.Sprintf("%sНазɑд", emoji.BackArrow))
 	BtnMenuProviderRu = OshnoProviderMarkupRu.Text(fmt.Sprintf("%sМеню", emoji.House))
 
@@ -152,9 +152,9 @@ func InitTojNetProvider() {
 		ResizeKeyboard: true,
 	}
 
-	BtnTojNetConnectProviderRu = TojNetProviderMarkupRu.Text("Подключить провайдер TojNet")
-	BtnTojNetChangeTariffRu = TojNetProviderMarkupRu.Text("Изменить тариф TojNet")
-	BtnTojNetConnectAddittionalRu = TojNetProviderMarkupRu.Text("Подключить дополнительный тариф TojNet")
+	BtnTojNetConnectProviderRu = TojNetProviderMarkupRu.Text("Пoдключится к провайдеру")           // first 'o' leter in enlish keyword
+	BtnTojNetChangeTariffRu = TojNetProviderMarkupRu.Text("Смeнить тариф")                         // first 'e' leter in enlish keyword
+	BtnTojNetConnectAddittionalRu = TojNetProviderMarkupRu.Text("Пoдключить дополнительную точку") // first 'o' leter in enlish keyword
 	BtnBackTojRu = TojNetProviderMarkupRu.Text(fmt.Sprintf("%sНɑзɑд", emoji.BackArrow))
 	BtnMenuTojRu = TojNetProviderMarkupRu.Text(fmt.Sprintf("%sМеню", emoji.House))
 

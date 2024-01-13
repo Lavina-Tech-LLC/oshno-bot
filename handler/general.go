@@ -31,7 +31,7 @@ func (h BotHandler) Start(c tele.Context) error {
 		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 	}
 
-	return c.Send("Для регистрации поделитесь своим номер телефона: ", models.PhoneMarkup)
+	return c.Send("Ассалому алайкум, барои сабти ном лутфан рақами телефони худро мубодила кунед\nЗдравствуйте, для регистрации пожалуйста, поделитесь своим номером телефона", models.PhoneMarkup)
 }
 
 func (h BotHandler) Contact(c tele.Context) error {
@@ -144,8 +144,13 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 		message := strings.TrimSpace(c.Message().Text)
-		if len(message) > 50 && user.UserPhase != 30 {
-			return nil
+		if len(message) > 150 && user.UserPhase != 30 {
+			switch user.Language {
+			case constants.Tajik:
+				return c.Send("Паёми шумо хеле дароз аст! Бори дигар кӯшиш кунед, танҳо онро каме содда кунед")
+			default:
+				return c.Send("Ваше сообщение слишком длиная! Попробуйте снова только немного упростив")
+			}
 		}
 
 		h.logger.Info("onText started", zap.Any("user", user), zap.String("user message", message), zap.String("workers", h.workers[user.ID]))
@@ -584,10 +589,21 @@ func (h BotHandler) backgroundFunc(c tele.Context, user models.User, num uint) {
 }
 
 func confirmMessageTg(payload models.Request) string {
+	service := payload.Service
+
+	switch payload.Service {
+	case constants.ServiceConnectProviderRu:
+		service = "1"
+	case constants.ServiceChangeTariffRu:
+		service = "2"
+	case constants.ServiceConnectAdditionalTariffRu:
+		service = "3"
+	}
+
 	if payload.Service != constants.ServiceConnectProviderRu {
-		return fmt.Sprintf("Оё шумо тасдиқ мекунед, ки аз провайдери хидматрасони %s %s дархост кунед, дуруст?\nНоми пурра: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\nҲисоби шахсӣ: %s\n",
-			payload.Service,
+		return fmt.Sprintf("Провайдер: %s\nХизмат: %s\nНом ва насаб: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\nҲисоби шахсӣ: %s\n",
 			payload.Provider,
+			service,
 			payload.FullName,
 			payload.PhoneNumber,
 			payload.Address,
@@ -595,9 +611,9 @@ func confirmMessageTg(payload models.Request) string {
 			payload.PersonalAccount,
 		)
 	}
-	return fmt.Sprintf("Оё шумо тасдиқ мекунед, ки аз провайдери хидматрасони %s %s дархост кунед, дуруст?\nНоми пурра: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\n",
-		payload.Service,
+	return fmt.Sprintf("Провайдер: %s\nХизмат: %s\nНом ва насаб: %s\nРақами мобилӣ: %s\nСуроға: %s\nПлан: %s\n",
 		payload.Provider,
+		service,
 		payload.FullName,
 		payload.PhoneNumber,
 		payload.Address,
@@ -607,9 +623,9 @@ func confirmMessageTg(payload models.Request) string {
 
 func confirmMessageRu(payload models.Request) string {
 	if payload.Service != constants.ServiceConnectProviderRu {
-		return fmt.Sprintf("Вы подтверждаете, что хотите отправить заявку на услугу %s провайдер %s?\nИмя м фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
-			payload.Service,
+		return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
 			payload.Provider,
+			payload.Service,
 			payload.FullName,
 			payload.PhoneNumber,
 			payload.Address,
@@ -617,9 +633,9 @@ func confirmMessageRu(payload models.Request) string {
 			payload.PersonalAccount,
 		)
 	}
-	return fmt.Sprintf("Вы подтверждаете, что хотите отправить заявку на услугу %s провайдер %s?\nИмя м фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\n",
-		payload.Service,
+	return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя м фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
 		payload.Provider,
+		payload.Service,
 		payload.FullName,
 		payload.PhoneNumber,
 		payload.Address,

@@ -86,7 +86,7 @@ const (
 const (
 	ServiceConnectProviderRu         = "Подлючить провайдер"
 	ServiceChangeTariffRu            = "Сменить тариф"
-	ServiceConnectAdditionalTariffRu = "Подключить допалнительный тариф"
+	ServiceConnectAdditionalTariffRu = "Подключить дополнительную точку"
 )
 
 const (
