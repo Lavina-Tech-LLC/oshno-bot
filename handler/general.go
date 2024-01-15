@@ -686,7 +686,7 @@ func confirmMessageTg(payload models.Request) string {
 func confirmMessageRu(payload models.Request) string {
 	switch payload.Service {
 	case constants.ServiceConnectProviderRu:
-		return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя м фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
+		return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
 			payload.Provider,
 			payload.Service,
 			payload.FullName,
@@ -716,7 +716,7 @@ func confirmMessageRu(payload models.Request) string {
 		)
 	}
 
-	return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя м фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
+	return fmt.Sprintf("Провайдер: %s\nУслуга: %s\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
 		payload.Provider,
 		payload.Service,
 		payload.FullName,
@@ -729,7 +729,7 @@ func confirmMessageRu(payload models.Request) string {
 func newRequestMessageToGroup(rq models.Request) string {
 	switch rq.Service {
 	case constants.ServiceConnectProviderRu:
-		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\n",
+		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
 			rq.Provider,
 			rq.Service,
 			rq.ID,
@@ -739,7 +739,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 			rq.Plan,
 		)
 	case constants.ServiceChangeTariffRu:
-		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nТариф: %s\nЛицевой счёт: %s\n",
+		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nНомер телефона: %s\nТариф: %s\nЛицевой счёт: %s\n",
 			rq.Provider,
 			rq.Service,
 			rq.ID,
@@ -750,7 +750,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 		)
 
 	case constants.ServiceConnectAdditionalTariffRu:
-		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
+		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\nЛицевой счёт: %s\n",
 			rq.Provider,
 			rq.Service,
 			rq.ID,
@@ -761,7 +761,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 			rq.PersonalAccount,
 		)
 	}
-	return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nТелефон номер: %s\nАдрес: %s\nТариф: %s\n",
+	return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
 		rq.Provider,
 		rq.Service,
 		rq.ID,
