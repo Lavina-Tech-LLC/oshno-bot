@@ -69,8 +69,8 @@ func InitAdvertisement() {
 
 func InitConfirmButton() {
 	ConfirmAdMarkup = &tele.ReplyMarkup{}
-	BtnConfirmAd = ConfirmAdMarkup.Data("Ҳа", "yes_confirm")
-	BtnIgnoreAd = ConfirmAdMarkup.Data("Нест", "no_confirm")
+	BtnConfirmAd = ConfirmAdMarkup.Data("Да", "yes_confirm_ad")
+	BtnIgnoreAd = ConfirmAdMarkup.Data("Нет", "no_confirm_ad")
 }
 
 // inline language buttons
