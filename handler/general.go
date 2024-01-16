@@ -732,7 +732,6 @@ func newRequestMessageToGroup(rq models.Request) string {
 		plan = constants.OshnoPlans[int(rq.PlanNumber)]
 	} else {
 		plan = constants.TojNetPlans[int(rq.PlanNumber)]
-
 	}
 	switch rq.Service {
 	case constants.ServiceConnectProviderRu:

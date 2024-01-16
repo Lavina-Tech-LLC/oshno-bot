@@ -15,6 +15,14 @@ type AIData struct {
 	CreatedAt string `json:"createdAt"`
 }
 
+type AIBidRequest struct {
+	Name     string   `json:"name"`
+	Plan     string   `json:"plan"`
+	Phone    string   `json:"phoneNumber"`
+	Address  string   `json:"address"`
+	Messages []AIData `json:"messages"`
+}
+
 func (r AIRespBody) GenerateMessage(user User) string {
 	msgTg := fmt.Sprintf("Чат айди: %s\nПолное имя: %s\nНикнейм: @%s\nТел номер: %s\n\n", user.AIChatId, user.FullName, user.Nickname, user.PhoneNumber)
 
