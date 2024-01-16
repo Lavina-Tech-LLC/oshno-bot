@@ -141,7 +141,7 @@ func Start(h BotHandler) {
 	go func() {
 		cnf := config.Config()
 		http.HandleFunc("/test", middleware.Cors(h.Test))
-
+		http.HandleFunc("/send/group", middleware.Cors(h.SendToGroupRequest))
 		fmt.Printf("Listening to port: %s\n", cnf.Server.Port)
 		http.ListenAndServe(string(cnf.Server.Port), nil)
 		// http.ListenAndServe("localhost:"+cnf.ServerPort, nil)
