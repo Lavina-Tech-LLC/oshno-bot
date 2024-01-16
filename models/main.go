@@ -30,6 +30,7 @@ type (
 		PhoneNumber     string
 		Address         string
 		Plan            string
+		PlanNumber      uint
 		PersonalAccount string
 		IsUnlimit       bool `gorm:"default:null"`
 		IsFilled        bool `gorm:"default:false"`

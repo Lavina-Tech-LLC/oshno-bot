@@ -2,8 +2,11 @@ package handler
 
 import (
 	"fmt"
+	"net/http"
+	"oshno/config"
 	"oshno/models"
 	"oshno/pkg/constants"
+	"oshno/pkg/middleware"
 	"oshno/storage"
 
 	"go.uber.org/zap"
@@ -135,6 +138,14 @@ func Start(h BotHandler) {
 
 	h.bot.Handle(tele.OnText, h.Text(constants.Russian))
 	h.bot.Handle(tele.OnLocation, h.Location)
+	go func() {
+		cnf := config.Config()
+		http.HandleFunc("/test", middleware.Cors(h.Test))
+
+		fmt.Printf("Listening to port: %s\n", cnf.Server.Port)
+		http.ListenAndServe(string(cnf.Server.Port), nil)
+		// http.ListenAndServe("localhost:"+cnf.ServerPort, nil)
+	}()
 
 	h.bot.Start()
 }

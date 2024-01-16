@@ -9,20 +9,7 @@ import (
 	"oshno/models"
 )
 
-type RespBody struct {
-	Data    []Data `json:"data"`
-	Message string `json:"message"`
-	IsOk    bool   `json:"isOk"`
-}
-
-type Data struct {
-	Role      string `json:"role"`
-	Name      string `json:"name"`
-	Content   string `json:"content"`
-	CreatedAt string `json:"createdAt"`
-}
-
-func GetHistoryChat(chatId string) (*RespBody, error) {
+func GetHistoryChat(chatId string) (*models.AIRespBody, error) {
 	url := "https://chatly-back.lavina.tech/chats/history/" + fmt.Sprintf("%s", chatId)
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -54,7 +41,7 @@ func GetHistoryChat(chatId string) (*RespBody, error) {
 	}
 
 	// Print the response body as a string
-	var history RespBody
+	var history models.AIRespBody
 	fmt.Println(string(body))
 	err = json.Unmarshal(body, &history)
 
@@ -64,15 +51,4 @@ func GetHistoryChat(chatId string) (*RespBody, error) {
 	}
 
 	return &history, nil
-}
-
-func (r RespBody) GenerateMessage(user models.User) string {
-	msgTg := fmt.Sprintf("Чат айди: %s\nПолное имя: %s\nНикнейм: @%s\nТел номер: %s\n\n", user.AIChatId, user.FullName, user.Nickname, user.PhoneNumber)
-
-	for _, message := range r.Data {
-		msgUser := fmt.Sprintf("Роль %s:\n    %s\n\n", message.Role, message.Content)
-		msgTg = msgTg + msgUser
-	}
-
-	return msgTg
 }

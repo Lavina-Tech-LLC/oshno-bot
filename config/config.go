@@ -10,6 +10,7 @@ import (
 type configuration struct {
 	Database databaseConfigurations
 	Telegram telegramConfigurations
+	Server   serverConfigurations
 }
 
 // DatabaseConfigurations exported
@@ -24,6 +25,10 @@ type databaseConfigurations struct {
 
 type telegramConfigurations struct {
 	TelegramToken string
+}
+
+type serverConfigurations struct {
+	Port string
 }
 
 func Config() *configuration {
@@ -45,7 +50,7 @@ func Config() *configuration {
 
 	// Set undefined variables
 	viper.SetDefault("database.dbname", "test_db")
-
+	viper.SetDefault("server.port", ":4132")
 	err := viper.Unmarshal(&configuration)
 	if err != nil {
 		fmt.Printf("Unable to decode into struct, %v", err)

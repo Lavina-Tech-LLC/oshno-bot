@@ -27,10 +27,22 @@ func (h BotHandler) PlanBtn(planNumber int) func(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
+		request.PlanNumber = uint(planNumber)
 		if request.Provider == constants.RequestOshoProvider {
-			request.Plan = constants.OshnoPlans[planNumber]
+			switch user.Language {
+			case constants.Tajik:
+				request.Plan = constants.OshnoPlansToj[planNumber]
+			default:
+				request.Plan = constants.OshnoPlans[planNumber]
+
+			}
 		} else {
-			request.Plan = constants.TojNetPlans[planNumber]
+			switch user.Language {
+			case constants.Tajik:
+				request.Plan = constants.TojNetPlansToj[planNumber]
+			default:
+				request.Plan = constants.TojNetPlansToj[planNumber]
+			}
 		}
 
 		switch user.UserPhase {

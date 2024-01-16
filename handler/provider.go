@@ -74,7 +74,6 @@ func (h BotHandler) AIConfirm(q string) func(c tele.Context) error {
 		if q == "no" {
 			messages, err := gateways.GetHistoryChat(user.AIChatId)
 			message := messages.GenerateMessage(user)
-			fmt.Println(message)
 			_, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
 			if err != nil {
 				fmt.Println(err.Error())

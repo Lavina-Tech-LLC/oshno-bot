@@ -607,7 +607,7 @@ func (h BotHandler) updateRequest(message string, phase, userId uint) error {
 
 func (h BotHandler) backgroundFunc(c tele.Context, user models.User, num uint) {
 	startTime := time.Now()
-	startTime.Add(time.Minute * 1)
+	startTime.Add(time.Minute * 30)
 
 	for {
 		if utils.IsLastWorker(h.workers[user.ID], num) {
@@ -727,6 +727,13 @@ func confirmMessageRu(payload models.Request) string {
 }
 
 func newRequestMessageToGroup(rq models.Request) string {
+	var plan string
+	if rq.Provider == constants.RequestOshoProvider {
+		plan = constants.OshnoPlans[int(rq.PlanNumber)]
+	} else {
+		plan = constants.TojNetPlans[int(rq.PlanNumber)]
+
+	}
 	switch rq.Service {
 	case constants.ServiceConnectProviderRu:
 		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nНомер телефона: %s\nАдрес: %s\nТариф: %s\n",
@@ -736,7 +743,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 			rq.FullName,
 			rq.PhoneNumber,
 			rq.Address,
-			rq.Plan,
+			plan,
 		)
 	case constants.ServiceChangeTariffRu:
 		return fmt.Sprintf("Новая заявка\n\nПровайдер: %s\nУслуга: %s\nНомер заявки: %d\nИмя и фамилия: %s\nНомер телефона: %s\nТариф: %s\nЛицевой счёт: %s\n",
@@ -745,7 +752,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 			rq.ID,
 			rq.FullName,
 			rq.PhoneNumber,
-			rq.Plan,
+			plan,
 			rq.PersonalAccount,
 		)
 
@@ -757,7 +764,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 			rq.FullName,
 			rq.PhoneNumber,
 			rq.Address,
-			rq.Plan,
+			plan,
 			rq.PersonalAccount,
 		)
 	}
@@ -768,7 +775,7 @@ func newRequestMessageToGroup(rq models.Request) string {
 		rq.FullName,
 		rq.PhoneNumber,
 		rq.Address,
-		rq.Plan,
+		plan,
 	)
 
 }
