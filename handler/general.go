@@ -607,7 +607,7 @@ func (h BotHandler) updateRequest(message string, phase, userId uint) error {
 
 func (h BotHandler) backgroundFunc(c tele.Context, user models.User, num uint) {
 	startTime := time.Now()
-	startTime.Add(time.Minute * 30)
+	startTime.Add(time.Minute * 10)
 
 	for {
 		if utils.IsLastWorker(h.workers[user.ID], num) {
