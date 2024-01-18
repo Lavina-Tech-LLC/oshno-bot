@@ -439,6 +439,7 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 			}
 			messageSend := []byte(message)
+
 			err = conn.WriteMessage(websocket.TextMessage, messageSend)
 			if err != nil {
 				h.logger.Error(err.Error())
@@ -447,22 +448,25 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			num, workers := utils.AddWorker(h.workers[user.ID])
 			h.workers[user.ID] = workers
 			go h.backgroundFunc(c, user, num)
+			for {
+				_, message, err := conn.ReadMessage()
+				if err != nil {
+					log.Println("read:", err)
+					return nil
+				}
+				if string(message) != "" {
+					c.Send(string(message))
+				}
 
-			_, message, err := conn.ReadMessage()
-			if err != nil {
-				log.Println("read:", err)
-				return nil
+				// Закрыть соединение после получения сообщения
+
+				err = conn.Close()
+				if err != nil {
+					fmt.Println("close error:", err)
+					return nil
+				}
 			}
-			c.Send(string(message))
-			// Закрыть соединение после получения сообщения
 
-			err = conn.Close()
-			if err != nil {
-				fmt.Println("close error:", err)
-				return nil
-			}
-
-			return nil
 		}
 
 		return nil
