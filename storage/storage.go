@@ -171,8 +171,19 @@ func (s *Storage) GetLastFilledRequestUser(userId uint) (*models.Request, error)
 	var request models.Request
 	err := s.db.Where("user_id = ? and is_filled = true", userId).Order("created_at DESC").Find(&request).Error
 	if err != nil {
-		s.log.Error("update payload niyozbek", zap.Error(err))
+		s.log.Error("update payload request", zap.Error(err))
 		return nil, err
 	}
 	return &request, nil
+}
+
+func (s Storage) GetUserByChatId(userChatId string) (models.User, error) {
+	var user models.User
+	err := s.db.Where("ai_chat_id = ?", userChatId).Find(&user).Error
+	if err != nil {
+		s.log.Error("update payload request", zap.Error(err))
+		return user, err
+	}
+
+	return user, nil
 }

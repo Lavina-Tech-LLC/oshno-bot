@@ -16,11 +16,8 @@ type AIData struct {
 }
 
 type AIBidRequest struct {
-	Name     string   `json:"name"`
-	Plan     string   `json:"plan"`
-	Phone    string   `json:"phoneNumber"`
-	Address  string   `json:"address"`
-	Messages []AIData `json:"messages"`
+	ChatId  string `json:"chat_id"`
+	Subject string `json:"subject"`
 }
 
 func (r AIRespBody) GenerateMessage(user User) string {

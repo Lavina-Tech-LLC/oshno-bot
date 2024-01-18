@@ -2,9 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"oshno/models"
+	"oshno/pkg/constants"
+	"oshno/pkg/gateways"
+
+	tele "gopkg.in/telebot.v3"
 )
 
 func (h BotHandler) Test(w http.ResponseWriter, req *http.Request) {
@@ -22,22 +25,24 @@ func (h BotHandler) SendToGroupRequest(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	newRequest := models.Request{
-		FullName:    body.Name,
-		Plan:        body.Plan,
-		PhoneNumber: body.Phone,
-		Address:     body.Address,
+	messages, err := gateways.GetHistoryChat(body.ChatId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
-	fmt.Println(newRequest)
-	// message := messages.GenerateMessage(user)
-	// fmt.Println(message)
-	// _, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// 	return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-	// }
-	// message := newRequestMessageToGroup(newRequest)
-	// _, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
+
+	user, err := h.storage.GetUserByChatId(body.ChatId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	message := messages.GenerateMessage(user)
+	_, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	w.Header().Set("Content-Type", "text/json")
 	w.WriteHeader(http.StatusOK)
