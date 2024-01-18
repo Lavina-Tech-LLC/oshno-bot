@@ -50,7 +50,7 @@ func Config() *configuration {
 
 	// Set undefined variables
 	viper.SetDefault("database.dbname", "test_db")
-	viper.SetDefault("server.port", ":4132")
+	viper.SetDefault("server.port", ":8080")
 	err := viper.Unmarshal(&configuration)
 	if err != nil {
 		fmt.Printf("Unable to decode into struct, %v", err)
