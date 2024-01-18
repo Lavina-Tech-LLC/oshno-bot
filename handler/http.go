@@ -37,7 +37,7 @@ func (h BotHandler) SendToGroupRequest(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	message := messages.GenerateMessage(user)
+	message := messages.GenerateMessage(user, body.Subject)
 	_, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
