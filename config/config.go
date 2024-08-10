@@ -11,6 +11,11 @@ type configuration struct {
 	Database databaseConfigurations
 	Telegram telegramConfigurations
 	Server   serverConfigurations
+	Chatly   chatlyConfigurations
+}
+
+type chatlyConfigurations struct {
+	Key string
 }
 
 // DatabaseConfigurations exported

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"oshno/config"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -14,8 +15,8 @@ import (
 )
 
 func Connection(chatId string, lang string) (*websocket.Conn, error) {
-
-	url := "wss://chatly-ws.lavina.tech/chat/" + chatId
+	cfg := config.Config()
+	url := "wss://chatly-ws.lavina.tech/chat?chatId=" + chatId + "&serviceKey=" + cfg.Chatly.Key
 	header := http.Header{}
 
 	header.Add("Origin", "https://oshno.lavina.tech")
@@ -46,8 +47,7 @@ func Connection(chatId string, lang string) (*websocket.Conn, error) {
 func ConnTest(context tele.Context, chatId string) (*websocket.Conn, error) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
-
-	url := "wss://chatly-ws.lavina.tech/chat/" + chatId
+	url := "wss://chatly-ws.lavina.tech/chat?chatId=" + chatId + "&serviceKey=ce1d6e3c-1a7d-4a77-8c8f-35d7b7986b77"
 	header := http.Header{}
 
 	header.Add("Origin", "https://oshno.lavina.tech")
