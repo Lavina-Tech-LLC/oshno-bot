@@ -16,15 +16,15 @@ import (
 	tele "gopkg.in/telebot.v3"
 )
 
-var (
-	workers map[uint]interface{}
-)
+// var (
+// 	workers map[uint]interface{}
+// )
 
 func (h BotHandler) Start(c tele.Context) error {
 	h.logger.Info("bot started")
 	user, err := h.storage.GetUserByTgId(c.Sender().ID)
 	if err != nil {
-		return nil
+		return c.Send("Ассалому алайкум, барои сабти ном лутфан рақами телефони худро мубодила кунед\nЗдравствуйте, для регистрации пожалуйста, поделитесь своим номером телефона", models.PhoneMarkup)
 	}
 	err = h.storage.UpdatePhase(user.ID, 0)
 	if err != nil {
