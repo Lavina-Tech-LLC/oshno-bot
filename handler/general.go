@@ -280,102 +280,6 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			default:
 				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPreferPlanTariff], models.PlanStatusMarkupRu)
 			}
-
-			/*
-				case 4:
-					validated := utils.ValidateDateBirth(message)
-					if !validated {
-						switch user.Language {
-						case constants.Tajik:
-							return c.Send(constants.ConstMessages[constants.Tajik][constants.ReEnterDateBirth])
-						default:
-							return c.Send(constants.ConstMessages[constants.Russian][constants.ReEnterDateBirth])
-						}
-					}
-
-					err := h.updateRequest(message, 4, user.ID)
-					if err != nil {
-						return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-					}
-
-					switch user.Language {
-					case constants.Tajik:
-						return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPhoneNumber], models.PhoneMarkupTg)
-					default:
-						return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPhoneNumber], models.PhoneMarkup)
-					}
-				case 5:
-					if !strings.HasPrefix(message, "+") {
-						message = "+" + message
-					}
-
-					if !validation.IsPhoneValid(message) {
-						switch user.Language {
-						case constants.Tajik:
-							return c.Send(constants.ConstMessages[constants.Tajik][constants.ReEnterPhoneNumber])
-						default:
-							return c.Send(constants.ConstMessages[constants.Russian][constants.ReEnterPhoneNumber])
-						}
-					}
-
-					err := h.updateRequest(message, 5, user.ID)
-					if err != nil {
-						return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-					}
-
-					switch user.Language {
-					case constants.Tajik:
-						return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterEmail], models.DisplayMarkupTg)
-					default:
-						return c.Send(constants.ConstMessages[constants.Russian][constants.EnterEmail], models.DisplayMarkupRu)
-					}
-				case 6:
-					validated := utils.ValidateEmail(message)
-					if !validated {
-						switch user.Language {
-						case constants.Tajik:
-							return c.Send(constants.ConstMessages[constants.Tajik][constants.ReEnterEmail])
-						default:
-							return c.Send(constants.ConstMessages[constants.Russian][constants.ReEnterEmail])
-						}
-					}
-
-					err := h.updateRequest(message, 6, user.ID)
-					if err != nil {
-						return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-					}
-
-					switch user.Language {
-					case constants.Tajik:
-						return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress])
-					default:
-						return c.Send(constants.ConstMessages[constants.Russian][constants.EnterAddress])
-					}
-				case 7:
-					err := h.updateRequest(message, 7, user.ID)
-					if err != nil {
-						return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-					}
-
-					switch user.Language {
-					case constants.Tajik:
-						return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPassportData])
-					default:
-						return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPassportData])
-					}
-				case 8:
-					err := h.updateRequest(message, 8, user.ID)
-					if err != nil {
-						return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-					}
-
-					switch user.Language {
-					case constants.Tajik:
-						return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPassportFront])
-					default:
-						return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPassportFront])
-					}
-			*/
 		case 9:
 			request, err := h.storage.GetLastRequestUser(user.ID)
 			if err != nil {
@@ -481,92 +385,6 @@ func (h BotHandler) Photo(c tele.Context) error {
 		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 	}
 
-	/*
-		request, err := h.storage.GetLastRequestUser(user.ID)
-		if err != nil {
-			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-		}
-
-		PHOTO FRONT phase
-		if user.UserPhase == 9 {
-			body, err := json.Marshal(c.Message().Photo)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			request.PhotoFront = body
-			err = h.storage.UpdateRequest(request.ID, request)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			err = h.storage.UpdatePhase(user.ID, 10)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			switch user.Language {
-			case constants.Tajik:
-				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPassportBack])
-			default:
-				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPassportBack])
-			}
-		}
-		// PHOTO BACK phase
-		if user.UserPhase == 10 {
-			body, err := json.Marshal(c.Message().Photo)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-			request.PhotoBack = body
-			err = h.storage.UpdateRequest(request.ID, request)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-			err = h.storage.UpdatePhase(user.ID, 11)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
-			switch user.Language {
-			case constants.Tajik:
-				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterPhotoWith])
-			default:
-				return c.Send(constants.ConstMessages[constants.Russian][constants.EnterPhotoWith])
-			}
-		}
-		// PHOTO WITH phase
-		if user.UserPhase == 11 {
-			body, err := json.Marshal(c.Message().Photo)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-			request.PhotoWith = body
-			err = h.storage.UpdateRequest(request.ID, request)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-			err = h.storage.UpdatePhase(user.ID, 12)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-			switch user.Language {
-			case constants.Tajik:
-				if request.Provider == constants.RequestTojNet {
-					return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterTariffSelectionTojNet], models.PlanListMarkupToj)
-				} else {
-					return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterTariffSelectionOshnoService], models.PlanListMarkupOsh)
-				}
-			default:
-				if request.Provider == constants.RequestTojNet {
-					return c.Send(constants.ConstMessages[constants.Russian][constants.EnterTariffSelectionTojNet], models.PlanListMarkupToj)
-				} else {
-					return c.Send(constants.ConstMessages[constants.Russian][constants.EnterTariffSelectionOshnoService], models.PlanListMarkupOsh)
-				}
-			}
-		}
-	*/
-
 	// only for admins
 	if user.UserPhase == 20 {
 		err := h.uploadMedia(*c.Message())
@@ -574,7 +392,7 @@ func (h BotHandler) Photo(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
-		return c.Send(fmt.Sprintf("Подтверждаете ли вы отправку текста объявления пользователям?"), models.ConfirmAdMarkup)
+		return c.Send("Подтверждаете ли вы отправку текста объявления пользователям?", models.ConfirmAdMarkup)
 	}
 
 	return nil
