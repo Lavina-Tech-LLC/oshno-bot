@@ -2,16 +2,14 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"oshno/models"
 	"oshno/pkg/constants"
-	"oshno/pkg/socket"
+	"oshno/pkg/gateways"
 	"oshno/pkg/utils"
 	"oshno/pkg/validation"
 	"strings"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 	tele "gopkg.in/telebot.v3"
 )
@@ -336,41 +334,18 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			}
 
 		case 30:
-			// var aiMessage string
-			conn, err := socket.Connection(user.AIChatId, user.Language)
+			data, err := gateways.SendMessage(user.AIChatId, message)
 			if err != nil {
 				h.logger.Error(err.Error())
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 			}
-			messageSend := []byte(message)
 
-			err = conn.WriteMessage(websocket.TextMessage, messageSend)
-			if err != nil {
-				h.logger.Error(err.Error())
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-			num, workers := utils.AddWorker(h.workers[user.ID])
-			h.workers[user.ID] = workers
-			go h.backgroundFunc(c, user, num)
-			for {
-				_, message, err := conn.ReadMessage()
-				if err != nil {
-					log.Println("read:", err)
-					return nil
-				}
-				if string(message) != "" {
-					c.Send(string(message))
-				}
+			// sending confirm message
+			// num, workers := utils.AddWorker(h.workers[user.ID])
+			// h.workers[user.ID] = workers
+			// go h.backgroundFunc(c, user, num)
 
-				// Закрыть соединение после получения сообщения
-
-				err = conn.Close()
-				if err != nil {
-					fmt.Println("close error:", err)
-					return nil
-				}
-			}
-
+			c.Send(data.Data)
 		}
 
 		return nil
@@ -429,7 +404,7 @@ func (h BotHandler) updateRequest(message string, phase, userId uint) error {
 
 func (h BotHandler) backgroundFunc(c tele.Context, user models.User, num uint) {
 	startTime := time.Now()
-	startTime.Add(time.Minute * 10)
+	startTime = startTime.Add(time.Minute * 10)
 
 	for {
 		if utils.IsLastWorker(h.workers[user.ID], num) {

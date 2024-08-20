@@ -73,6 +73,10 @@ func (h BotHandler) AIConfirm(q string) func(c tele.Context) error {
 		}
 		if q == "no" {
 			messages, err := gateways.GetHistoryChat(user.AIChatId)
+			if err != nil {
+				h.logger.Error("error in getting history", zap.Error(err))
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
 			message := messages.GenerateMessage(user, "")
 			_, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
 			if err != nil {
