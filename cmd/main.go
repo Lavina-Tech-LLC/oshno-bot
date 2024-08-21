@@ -6,6 +6,7 @@ import (
 	"oshno/db"
 	"oshno/handler"
 	"oshno/migration"
+	"oshno/pkg/cron"
 	"oshno/pkg/logger"
 	"oshno/storage"
 	"time"
@@ -41,5 +42,7 @@ func main() {
 	// socket.Connection()
 
 	h := handler.NewBotHandler(bot, logger, storage)
+
+	cron.StartCronjob(storage, logger, bot)
 	handler.Start(h)
 }

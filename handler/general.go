@@ -340,10 +340,12 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 			}
 
-			// sending confirm message
-			// num, workers := utils.AddWorker(h.workers[user.ID])
-			// h.workers[user.ID] = workers
-			// go h.backgroundFunc(c, user, num)
+			now := time.Now()
+			err = h.storage.UpdateUser(user.ID, models.User{AIConfirmSended: false, AILastMessageTime: &now})
+			if err != nil {
+
+				h.logger.Error("error in update user: ", zap.Error(err))
+			}
 
 			c.Send(data.Data)
 		}

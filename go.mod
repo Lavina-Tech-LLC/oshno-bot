@@ -6,6 +6,7 @@ require (
 	github.com/enescakir/emoji v1.0.0
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/websocket v1.5.1
+	github.com/robfig/cron v1.2.0
 	github.com/spf13/viper v1.13.0
 	go.uber.org/zap v1.17.0
 	gopkg.in/telebot.v3 v3.2.1

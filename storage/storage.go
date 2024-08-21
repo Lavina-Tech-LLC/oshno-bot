@@ -187,3 +187,30 @@ func (s Storage) GetUserByChatId(userChatId string) (models.User, error) {
 
 	return user, nil
 }
+
+func (s *Storage) UpdateUser(id uint, user models.User) error {
+	err := s.db.Model(&models.User{}).Where("id = ?", id).Updates(&user).Error
+	if err != nil {
+		s.log.Error("update user failed", zap.Error(err))
+		return err
+	}
+	if !user.AIConfirmSended {
+		err := s.db.Model(&models.User{}).Where("id = ?", id).Update("ai_confirm_sended", false).Error
+		if err != nil {
+			s.log.Error("update user failed", zap.Error(err))
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *Storage) GetAllUsersAINotConfirmed() ([]models.User, error) {
+	var users []models.User
+	err := s.db.Where("ai_confirm_sended = ?", false).Find(&users).Error
+	if err != nil {
+		s.log.Error("get all users failed", zap.Error(err))
+		return users, err
+	}
+	return users, nil
+}
