@@ -61,9 +61,6 @@ func (h BotHandler) PlanBtn(planNumber int) func(c tele.Context) error {
 			case constants.Tajik:
 
 				c.Send(confirmMessageTg(*request))
-				if err != nil {
-					return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-				}
 				return c.Send("шумо ин маълумотро тасдиқ мекунед?", models.ConfirmRequestMarkupTg)
 			default:
 				c.Send(confirmMessageRu(*request))

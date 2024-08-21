@@ -247,7 +247,7 @@ func (h BotHandler) ConfirmRequest(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
-		request, err := h.storage.GetLastRequestUser(user.ID)
+		request, _ := h.storage.GetLastRequestUser(user.ID)
 		request.Address = fRequest.Address
 		request.PhoneNumber = fRequest.PhoneNumber
 		request.FullName = fRequest.FullName
@@ -281,7 +281,7 @@ func (h BotHandler) ConfirmRequest(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
-		request, err := h.storage.GetLastRequestUser(user.ID)
+		request, _ := h.storage.GetLastRequestUser(user.ID)
 		request.Address = fRequest.Address
 		request.PhoneNumber = fRequest.PhoneNumber
 		request.FullName = fRequest.FullName
@@ -289,7 +289,7 @@ func (h BotHandler) ConfirmRequest(c tele.Context) error {
 		message := newRequestMessageToGroup(*request)
 		_, err = h.bot.Send(&tele.Chat{ID: constants.TelegramGroupId}, message)
 		if err != nil {
-			h.logger.Error("error ", zap.Error(err))
+			h.logger.Error("error: ", zap.Error(err))
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 

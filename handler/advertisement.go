@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"oshno/models"
 	"oshno/pkg/constants"
 	"oshno/pkg/utils"
@@ -27,9 +26,9 @@ func (h BotHandler) Admin(c tele.Context) error {
 	}
 	switch user.Language {
 	case constants.Tajik:
-		return c.Send(fmt.Sprintf("Забонро интихоб кунед, паёмро ба кадом забон фиристед?"), models.LanguageMarkup)
+		return c.Send("Забонро интихоб кунед, паёмро ба кадом забон фиристед?", models.LanguageMarkup)
 	default:
-		return c.Send(fmt.Sprintf("Выберите язык, на каком языку вы хотите отправить пост?"), models.LanguageMarkup)
+		return c.Send("Выберите язык, на каком языку вы хотите отправить пост?", models.LanguageMarkup)
 	}
 }
 
@@ -44,7 +43,7 @@ func (h BotHandler) OnMedia(c tele.Context) error {
 	if err != nil {
 		return c.Send("Sorry. Bot's failure!, Try restarting the bot.", models.StartMarkup)
 	}
-	return c.Send(fmt.Sprintf("Подтверждаете ли вы отправку текста объявления пользователям?"), models.ConfirmAdMarkup)
+	return c.Send("Подтверждаете ли вы отправку текста объявления пользователям?", models.ConfirmAdMarkup)
 
 }
 
@@ -65,7 +64,7 @@ func (h BotHandler) uploadMedia(msg tele.Message) error {
 
 func (h BotHandler) SendAd(c tele.Context) error {
 	c.Delete()
-	user, err := h.storage.GetUserByTgId(c.Sender().ID)
+	user, _ := h.storage.GetUserByTgId(c.Sender().ID)
 	h.logger.Info("sending photo started", zap.Uint("userId", user.ID))
 
 	media, err := h.storage.GetMedia()
@@ -129,9 +128,9 @@ func (h BotHandler) SendAd(c tele.Context) error {
 	h.logger.Info("All ads sent successfully!")
 	switch user.Language {
 	case constants.Tajik:
-		return c.Send(fmt.Sprintf("Эълон ба ҳама корбарон фиристода мешавад!"), models.MenuMarkupTg)
+		return c.Send("Эълон ба ҳама корбарон фиристода мешавад!", models.MenuMarkupTg)
 	default:
-		return c.Send(fmt.Sprintf("Реклама всем юзерам отправлена!"), models.MenuMarkupRu)
+		return c.Send("Реклама всем юзерам отправлена!", models.MenuMarkupRu)
 	}
 }
 
