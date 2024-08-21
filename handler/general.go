@@ -82,7 +82,7 @@ func (h BotHandler) Contact(c tele.Context) error {
 	}
 
 	if phone == user.PhoneNumber {
-		return c.Send(constants.ConstMessages[constants.Russian][constants.ChooseLanguageStart], models.LanguageMarkup)
+		return c.Send(constants.ConstMessages[constants.Russian][constants.LanguageChanged], models.MenuMarkupRu)
 	}
 	err = h.storage.CreateUser(models.User{
 		PhoneNumber:    phone,
@@ -97,7 +97,7 @@ func (h BotHandler) Contact(c tele.Context) error {
 		return err
 	}
 	h.logger.Info("share contact finished", zap.Int64("userId", int64(user.ID)))
-	return c.Send(constants.ConstMessages[constants.Russian][constants.ChooseLanguageStart], models.LanguageMarkup)
+	return c.Send(constants.ConstMessages[constants.Russian][constants.LanguageChanged], models.MenuMarkupRu)
 }
 
 func (h BotHandler) Location(c tele.Context) error {
