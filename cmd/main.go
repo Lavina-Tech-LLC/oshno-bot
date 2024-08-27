@@ -21,10 +21,10 @@ func main() {
 	db := db.ConnectDB()
 
 	var token string
-	if conf.Telegram.TelegramToken != "" {
-		token = "6785340587:AAEB2tcCgrd3o196hP5_1PE5a_AHj-hzfvc"
-	} else {
+	if conf.Telegram.TelegramToken == "" {
 		token = "5446910492:AAFFFOQzEYMRMhTzDbxg5fsTgN-3aNLJgYw"
+	} else {
+		token = conf.Telegram.TelegramToken
 	}
 	storage := storage.NewStorage(db, logger)
 	pref := tele.Settings{
