@@ -46,5 +46,4 @@ func (h BotHandler) SendToGroupRequest(w http.ResponseWriter, req *http.Request)
 
 	w.Header().Set("Content-Type", "text/json")
 	w.WriteHeader(http.StatusOK)
-	return
 }

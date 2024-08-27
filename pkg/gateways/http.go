@@ -14,7 +14,7 @@ import (
 
 func GetHistoryChat(chatId string) (*models.AIRespBody, error) {
 	cfg := config.Config()
-	url := "https://chatly-back.lavina.tech/account/" + cfg.Chatly.Key + "/chats/history/" + chatId
+	url := "https://chatly-back.lavina.tech/service/" + cfg.Chatly.Key + "/chats/" + chatId + "/history"
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}

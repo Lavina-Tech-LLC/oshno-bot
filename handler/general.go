@@ -65,10 +65,6 @@ func (h BotHandler) Contact(c tele.Context) error {
 		}
 		if request.Service == constants.ServiceConnectProviderRu {
 			h.storage.UpdatePhase(user.ID, 4)
-			if err != nil {
-				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-			}
-
 			switch user.Language {
 			case constants.Tajik:
 				return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress], models.DisplayMarkupTg)
@@ -86,7 +82,7 @@ func (h BotHandler) Contact(c tele.Context) error {
 	}
 
 	if phone == user.PhoneNumber {
-		return c.Send(constants.ConstMessages[constants.Russian][constants.ChooseLanguageStart], models.LanguageMarkup)
+		return c.Send(constants.ConstMessages[constants.Russian][constants.LanguageChanged], models.MenuMarkupRu)
 	}
 	err = h.storage.CreateUser(models.User{
 		PhoneNumber:    phone,
@@ -101,7 +97,7 @@ func (h BotHandler) Contact(c tele.Context) error {
 		return err
 	}
 	h.logger.Info("share contact finished", zap.Int64("userId", int64(user.ID)))
-	return c.Send(constants.ConstMessages[constants.Russian][constants.ChooseLanguageStart], models.LanguageMarkup)
+	return c.Send(constants.ConstMessages[constants.Russian][constants.LanguageChanged], models.MenuMarkupRu)
 }
 
 func (h BotHandler) Location(c tele.Context) error {
@@ -216,10 +212,6 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 
 			if request.Service == constants.ServiceConnectProviderRu {
 				h.storage.UpdatePhase(user.ID, 4)
-				if err != nil {
-					return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
-				}
-
 				switch user.Language {
 				case constants.Tajik:
 					return c.Send(constants.ConstMessages[constants.Tajik][constants.EnterAddress], models.DisplayMarkupTg)
@@ -404,32 +396,32 @@ func (h BotHandler) updateRequest(message string, phase, userId uint) error {
 	return nil
 }
 
-func (h BotHandler) backgroundFunc(c tele.Context, user models.User, num uint) {
-	startTime := time.Now()
-	startTime = startTime.Add(time.Minute * 10)
+// func (h BotHandler) backgroundFunc(c tele.Context, user models.User, num uint) {
+// 	startTime := time.Now()
+// 	startTime = startTime.Add(time.Minute * 10)
 
-	for {
-		if utils.IsLastWorker(h.workers[user.ID], num) {
-			afterDelWorker := utils.DeleteWorker(h.workers[user.ID], num)
-			h.workers[user.ID] = afterDelWorker
-			return
-		}
-		elapsedTime := time.Since(startTime)
-		if elapsedTime >= time.Minute {
-			switch user.Language {
-			case constants.Tajik:
-				c.Send("Оё маълумот муфид буд?", models.AIConfirmMarkupTg)
-			default:
-				c.Send("Была ли информация полезной?", models.AIConfirmMarkupRu)
-			}
-			afterDelWorker := utils.DeleteWorker(h.workers[user.ID], num)
-			h.workers[user.ID] = afterDelWorker
+// 	for {
+// 		if utils.IsLastWorker(h.workers[user.ID], num) {
+// 			afterDelWorker := utils.DeleteWorker(h.workers[user.ID], num)
+// 			h.workers[user.ID] = afterDelWorker
+// 			return
+// 		}
+// 		elapsedTime := time.Since(startTime)
+// 		if elapsedTime >= time.Minute {
+// 			switch user.Language {
+// 			case constants.Tajik:
+// 				c.Send("Оё маълумот муфид буд?", models.AIConfirmMarkupTg)
+// 			default:
+// 				c.Send("Была ли информация полезной?", models.AIConfirmMarkupRu)
+// 			}
+// 			afterDelWorker := utils.DeleteWorker(h.workers[user.ID], num)
+// 			h.workers[user.ID] = afterDelWorker
 
-			return
-		}
+// 			return
+// 		}
 
-	}
-}
+// 	}
+// }
 
 func confirmMessageTg(payload models.Request) string {
 	service := payload.Service

@@ -2,6 +2,7 @@ package cron
 
 import (
 	"fmt"
+	"oshno/config"
 	"oshno/models"
 	"oshno/pkg/constants"
 	"oshno/storage"
@@ -34,6 +35,11 @@ func StartCronjob(storage *storage.Storage, log *zap.Logger, bot *tele.Bot) {
 }
 
 func (cj Cronjob) SendMessageAIConfirm() {
+	cfg := config.Config()
+	timeDuration := cfg.Cron.Duration
+	if timeDuration == 0 {
+		timeDuration = 10
+	}
 
 	// get all users and check last message send or not
 	users, err := cj.storage.GetAllUsersAINotConfirmed()
@@ -45,7 +51,7 @@ func (cj Cronjob) SendMessageAIConfirm() {
 
 	for _, user := range users {
 		now := time.Now()
-		lastTime := user.AILastMessageTime.Add(10 * time.Minute)
+		lastTime := user.AILastMessageTime.Add(time.Duration(timeDuration) * time.Minute)
 		fmt.Println("now: ", now, "last time: ", lastTime, lastTime.Before(now))
 		if lastTime.Before(now) {
 

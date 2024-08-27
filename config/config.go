@@ -12,6 +12,7 @@ type configuration struct {
 	Telegram telegramConfigurations
 	Server   serverConfigurations
 	Chatly   chatlyConfigurations
+	Cron     cronConfigurations
 }
 
 type chatlyConfigurations struct {
@@ -26,6 +27,10 @@ type databaseConfigurations struct {
 	DBHost     string
 	DBPort     uint
 	DBTimeZone string
+}
+
+type cronConfigurations struct {
+	Duration int32
 }
 
 type telegramConfigurations struct {
