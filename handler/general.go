@@ -144,6 +144,11 @@ func (h BotHandler) LanguageButton(languageCode string) func(c tele.Context) err
 
 func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 	return func(c tele.Context) error {
+		if c.Message().TopicMessage {
+			err := h.OperatorMessages(c)
+			return err
+		}
+
 		user, err := h.storage.GetUserByTgId(c.Sender().ID)
 		if user.ID == 0 {
 			return nil
@@ -162,7 +167,6 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 		}
 
 		h.logger.Info("onText started", zap.Any("user", user), zap.String("user message", message), zap.String("workers", h.workers[user.ID]))
-		fmt.Println(c.Message().ThreadID) // Получаем сырое сообщение
 
 		switch user.UserPhase {
 		case 1:
@@ -577,4 +581,24 @@ func newRequestMessageToGroup(rq models.Request) string {
 		plan,
 	)
 
+}
+
+func (h BotHandler) OperatorMessages(c tele.Context) error {
+	message := c.Message().Text
+	topicId := c.Message().ThreadID
+
+	h.logger.Info("operator answered message: ", zap.String("message", message))
+	user, err := h.storage.GetUserInActiveTopic(topicId)
+	if err != nil {
+
+		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+	}
+
+	if user.ID == 0 {
+		return nil
+	}
+
+	// c.Send()
+
+	return nil
 }

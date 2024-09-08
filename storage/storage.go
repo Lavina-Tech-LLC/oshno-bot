@@ -225,3 +225,15 @@ func (s *Storage) CreateTopic(req models.Topic) (models.Topic, error) {
 
 	return req, nil
 }
+
+func (s *Storage) GetUserInActiveTopic(topicId int) (models.User, error) {
+	var user models.User
+	err := s.db.Model(&models.User{}).Where("active_topic = ?", topicId).Find(&user).Error
+	if err != nil {
+
+		s.log.Error("error in get user with active topic: ", zap.Error(err))
+		return user, err
+	}
+
+	return user, nil
+}
