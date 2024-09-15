@@ -51,6 +51,10 @@ func (cj Cronjob) SendMessageAIConfirm() {
 
 	for _, user := range users {
 		now := time.Now()
+		if user.AILastMessageTime == nil {
+			continue
+		}
+
 		lastTime := user.AILastMessageTime.Add(time.Duration(timeDuration) * time.Minute)
 		fmt.Println("now: ", now, "last time: ", lastTime, lastTime.Before(now))
 		if lastTime.Before(now) {

@@ -19,6 +19,8 @@ type (
 		AIChatId          string
 		AILastMessageTime *time.Time
 		AIConfirmSended   bool `gorm:"default:true"`
+		Topics            []Topic
+		ActiveTopic       int32
 		gorm.Model
 	}
 
@@ -57,6 +59,22 @@ type (
 		PersonalAccount string
 		RequestId       uint
 		Request         Request
+		gorm.Model
+	}
+
+	OperatorChat struct {
+		Message  string
+		TopicId  string
+		Topic    Topic
+		Operator string
+		gorm.Model
+	}
+
+	Topic struct {
+		Name     string
+		ThreadId int32
+		UserId   uint
+		User     User
 		gorm.Model
 	}
 )

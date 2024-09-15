@@ -214,3 +214,14 @@ func (s *Storage) GetAllUsersAINotConfirmed() ([]models.User, error) {
 	}
 	return users, nil
 }
+
+func (s *Storage) CreateTopic(req models.Topic) (models.Topic, error) {
+	err := s.db.Create(&req).Error
+	if err != nil {
+
+		s.log.Error("error in create error", zap.Error(err))
+		return models.Topic{}, err
+	}
+
+	return req, nil
+}

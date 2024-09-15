@@ -97,6 +97,7 @@ func InitMenu() {
 
 	BtnRequestProviderRu = MenuMarkupRu.Text(fmt.Sprintf("%s Оставить запрос на провайдера", emoji.InboxTray))
 	BtnTechnicalSupportRu = MenuMarkupRu.Text(fmt.Sprintf("%s Tехническая подержка", emoji.ManTechnologist))
+	BtnOperatorSupportRu = MenuMarkupRu.Text(fmt.Sprintf("%s Связаться с оператором", emoji.WritingHand))
 
 }
 

@@ -51,6 +51,7 @@ func Start(h BotHandler) {
 
 	h.bot.Handle(&models.BtnRequestProviderRu, h.RequestProvider)
 	h.bot.Handle(&models.BtnTechnicalSupportRu, h.TechnicalSupport(constants.Russian))
+	h.bot.Handle(&models.BtnOperatorSupportRu, h.OperatorSupport(constants.Russian))
 
 	h.bot.Handle(&models.BtnRequestProviderTg, h.RequestProvider)
 	h.bot.Handle(&models.BtnTechnicalSupportTg, h.TechnicalSupport(constants.Tajik))
@@ -175,6 +176,7 @@ func setButtons() {
 
 	models.MenuMarkupRu.Reply(
 		models.MenuMarkupRu.Row(models.BtnRequestProviderRu, models.BtnTechnicalSupportRu),
+		models.MenuMarkupRu.Row(models.BtnOperatorSupportRu),
 	)
 
 	models.MenuMarkupTg.Reply(

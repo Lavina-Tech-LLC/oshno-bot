@@ -44,6 +44,7 @@ var (
 
 	BtnRequestProviderRu  tele.Btn
 	BtnTechnicalSupportRu tele.Btn
+	BtnOperatorSupportRu  tele.Btn
 )
 
 var (

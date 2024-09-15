@@ -152,7 +152,7 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 		message := strings.TrimSpace(c.Message().Text)
-		if len(message) > 150 && user.UserPhase != 30 {
+		if len(message) > 150 && user.UserPhase != 30 && user.UserPhase != int(constants.PhaseOperatorSupport) {
 			switch user.Language {
 			case constants.Tajik:
 				return c.Send("Паёми шумо хеле дароз аст! Бори дигар кӯшиш кунед, танҳо онро каме содда кунед")
@@ -162,6 +162,7 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 		}
 
 		h.logger.Info("onText started", zap.Any("user", user), zap.String("user message", message), zap.String("workers", h.workers[user.ID]))
+		fmt.Println(c.Message().ThreadID) // Получаем сырое сообщение
 
 		switch user.UserPhase {
 		case 1:
@@ -340,6 +341,14 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			}
 
 			c.Send(data.Data)
+		case int(constants.PhaseOperatorSupport):
+			// send to topic
+			err := gateways.SendMessageToTopic(int64(user.ActiveTopic), message)
+			if err != nil {
+				h.logger.Error("error in send message to operator group: ", zap.Error(err))
+			}
+
+			return err
 		}
 
 		return nil
