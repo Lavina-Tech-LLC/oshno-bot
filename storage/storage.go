@@ -79,6 +79,15 @@ func (s *Storage) UpdatePhase(id uint, phase int) error {
 	return nil
 }
 
+func (s *Storage) UpdateActiveTopic(id uint, topic int) error {
+	err := s.db.Model(&models.User{}).Where("id = ?", id).Update("active_topic", topic).Error
+	if err != nil {
+		s.log.Error("update language failed", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
 func (s *Storage) UpdateAIChatId(id uint, chatId string) error {
 	err := s.db.Model(&models.User{}).Where("id = ?", id).Update("ai_chat_id", chatId).Error
 	if err != nil {

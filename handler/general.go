@@ -596,11 +596,13 @@ func (h BotHandler) OperatorMessages(c tele.Context) error {
 	}
 
 	if user.ID == 0 {
+
+		gateways.SendMessageToTopic(int64(topicId), "Клиент уже закрыл чат и не получил ваш ответ!")
 		return nil
 	}
 
 	topic, _ := h.storage.GetTopicByThreadId(int32(topicId))
-	h.storage.CreateTopicMessage(models.OperatorChat{Message: message, TopicId: int32(topic.ID), Operator: c.Message().Chat.Username})
+	h.storage.CreateTopicMessage(models.OperatorChat{Message: message, TopicId: int32(topic.ID), Operator: c.Message().Sender.Username})
 
 	now := time.Now()
 	err = h.storage.UpdateUser(user.ID, models.User{OpertorLastMessageTime: &now})

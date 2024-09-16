@@ -328,6 +328,11 @@ func (h BotHandler) Menu() func(c tele.Context) error {
 			if err != nil {
 				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 			}
+
+			err = h.storage.UpdateActiveTopic(user.ID, 0)
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
 		}
 
 		switch user.Language {
