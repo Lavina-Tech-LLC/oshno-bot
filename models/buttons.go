@@ -186,6 +186,13 @@ var (
 )
 
 var (
+	OperatorConfirmMarkup *tele.ReplyMarkup
+
+	BtnOperatorConfirmYes tele.Btn
+	BtnOperatorConfirmNo  tele.Btn
+)
+
+var (
 
 	// share phone russian
 	PhoneFillMarkup   *tele.ReplyMarkup

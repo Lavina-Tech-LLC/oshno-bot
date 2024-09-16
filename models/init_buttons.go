@@ -26,6 +26,7 @@ func InitAllButtons() {
 	InitPlanStatus()
 	InitPhoneFill()
 	InitOperatorMenu()
+	InitOperatorConfirmButton()
 }
 
 // restart button
@@ -72,6 +73,13 @@ func InitConfirmButton() {
 	ConfirmAdMarkup = &tele.ReplyMarkup{}
 	BtnConfirmAd = ConfirmAdMarkup.Data("Да", "yes_confirm_ad")
 	BtnIgnoreAd = ConfirmAdMarkup.Data("Нет", "no_confirm_ad")
+}
+
+func InitOperatorConfirmButton() {
+	OperatorConfirmMarkup = &tele.ReplyMarkup{ResizeKeyboard: true}
+
+	BtnOperatorConfirmYes = OperatorConfirmMarkup.Text(fmt.Sprintf("%sДа", "👍"))
+	BtnOperatorConfirmNo = OperatorConfirmMarkup.Text("👎Нет")
 }
 
 // inline language buttons

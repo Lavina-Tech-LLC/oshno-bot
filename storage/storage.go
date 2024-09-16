@@ -260,7 +260,7 @@ func (s *Storage) CreateTopicMessage(message models.OperatorChat) error {
 
 func (s *Storage) GetTopicByThreadId(topicId int32) (models.Topic, error) {
 	var topic models.Topic
-	err := s.db.Model(&models.Topic{}).Where("thread_id = ?", topicId).Find(&topic).Error
+	err := s.db.Model(&models.Topic{}).Preload("User").Where("thread_id = ?", topicId).Find(&topic).Error
 	if err != nil {
 
 		s.log.Error("error in getting topic", zap.Error(err))

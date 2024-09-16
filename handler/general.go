@@ -590,6 +590,13 @@ func (h BotHandler) OperatorMessages(c tele.Context) error {
 	topicId := c.Message().ThreadID
 
 	h.logger.Info("operator answered message: ", zap.String("message", message))
+
+	if message == "/stop" {
+		h.Stop(c)
+		gateways.SendMessageToTopic(int64(topicId), "Вы закрыли чат с килентом")
+		return nil
+	}
+
 	user, err := h.storage.GetUserInActiveTopic(topicId)
 	if err != nil {
 		return nil

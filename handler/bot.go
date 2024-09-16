@@ -38,6 +38,7 @@ func Start(h BotHandler) {
 	adminOnly := h.bot.Group()
 	adminOnly.Use(tgMiddleware.Whitelist(getAdmins()...))
 	h.bot.Handle("/start", h.Start)
+	h.bot.Handle("/stop", h.Start)
 	adminOnly.Handle("/admin", h.Admin)
 	adminOnly.Handle(&models.BtnConfirmAd, h.SendAd)
 	adminOnly.Handle(&models.BtnIgnoreAd, h.UnsendAd)
@@ -136,6 +137,9 @@ func Start(h BotHandler) {
 	h.bot.Handle(&models.BtnPlanStatusUnlimitRu, h.PlanUnlimit())
 	h.bot.Handle(&models.BtnPlanStatusLimitToj, h.PlanLimit())
 	h.bot.Handle(&models.BtnPlanStatusUnlimitToj, h.PlanUnlimit())
+
+	h.bot.Handle(&models.BtnOperatorConfirmYes, h.OperatorConfirm("yes"))
+	h.bot.Handle(&models.BtnOperatorConfirmNo, h.OperatorConfirm("no"))
 
 	h.bot.Handle(tele.OnText, h.Text(constants.Russian))
 	h.bot.Handle(tele.OnLocation, h.Location)
@@ -256,6 +260,10 @@ func setButtons() {
 
 	models.AIConfirmMarkupTg.Reply(
 		models.AIConfirmMarkupTg.Row(models.BtnAIConfirmYesTg, models.BtnAIConfirmNoTg),
+	)
+
+	models.OperatorConfirmMarkup.Reply(
+		models.OperatorConfirmMarkup.Row(models.BtnOperatorConfirmYes, models.BtnOperatorConfirmNo),
 	)
 
 	models.DisplayMarkupRu.Reply(

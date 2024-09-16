@@ -98,6 +98,11 @@ func (h BotHandler) OperatorSupport(languageCode string) func(c tele.Context) er
 	}
 }
 
+func (h BotHandler) OperatorConfirm(q string) func(c tele.Context) error {
+	fmt.Println("confirm message", q)
+	return nil
+}
+
 func (h BotHandler) AIConfirm(q string) func(c tele.Context) error {
 	return func(c tele.Context) error {
 		h.logger.Info("AI confirm")
