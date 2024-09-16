@@ -237,3 +237,26 @@ func (s *Storage) GetUserInActiveTopic(topicId int) (models.User, error) {
 
 	return user, nil
 }
+
+func (s *Storage) CreateTopicMessage(message models.OperatorChat) error {
+	err := s.db.Create(&message).Error
+	if err != nil {
+
+		s.log.Error("error in create operator chat: ", zap.Error(err))
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) GetTopicByThreadId(topicId int32) (models.Topic, error) {
+	var topic models.Topic
+	err := s.db.Model(&models.Topic{}).Where("thread_id = ?", topicId).Find(&topic).Error
+	if err != nil {
+
+		s.log.Error("error in getting topic", zap.Error(err))
+		return topic, err
+	}
+
+	return topic, nil
+}

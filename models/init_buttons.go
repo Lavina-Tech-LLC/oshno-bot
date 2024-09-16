@@ -25,6 +25,7 @@ func InitAllButtons() {
 	InitDisplay()
 	InitPlanStatus()
 	InitPhoneFill()
+	InitOperatorMenu()
 }
 
 // restart button
@@ -282,4 +283,13 @@ func InitPhoneFill() {
 
 	BtnShareFillPhone = PhoneMarkup.Contact("Поделиться с контактом")
 	BtnShareFillPhoneTg = PhoneMarkup.Contact("Телефонро мубодила кунед")
+}
+
+func InitOperatorMenu() {
+	// operator menu
+	OperatorMenuMarkup = &tele.ReplyMarkup{
+		ResizeKeyboard: true,
+	}
+
+	OperatorMenuBtn = OperatorMenuMarkup.Text(fmt.Sprintf("%sМеню", emoji.House))
 }

@@ -352,6 +352,8 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 				h.logger.Error("error in send message to operator group: ", zap.Error(err))
 			}
 
+			topic, _ := h.storage.GetTopicByThreadId(user.ActiveTopic)
+			h.storage.CreateTopicMessage(models.OperatorChat{Message: message, TopicId: int32(topic.ID), Operator: ""})
 			return err
 		}
 
@@ -590,15 +592,22 @@ func (h BotHandler) OperatorMessages(c tele.Context) error {
 	h.logger.Info("operator answered message: ", zap.String("message", message))
 	user, err := h.storage.GetUserInActiveTopic(topicId)
 	if err != nil {
-
-		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		return nil
 	}
 
 	if user.ID == 0 {
 		return nil
 	}
 
-	// c.Send()
+	topic, _ := h.storage.GetTopicByThreadId(int32(topicId))
+	h.storage.CreateTopicMessage(models.OperatorChat{Message: message, TopicId: int32(topic.ID), Operator: c.Message().Chat.Username})
 
+	now := time.Now()
+	err = h.storage.UpdateUser(user.ID, models.User{OpertorLastMessageTime: &now})
+	if err != nil {
+		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+	}
+
+	c.Bot().Send(&tele.User{ID: user.TelegramUserId}, message)
 	return nil
 }

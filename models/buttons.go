@@ -194,3 +194,8 @@ var (
 	BtnShareFillPhone   tele.Btn
 	BtnShareFillPhoneTg tele.Btn
 )
+
+var (
+	OperatorMenuMarkup *tele.ReplyMarkup
+	OperatorMenuBtn    tele.Btn
+)

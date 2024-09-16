@@ -266,6 +266,10 @@ func setButtons() {
 		models.DisplayMarkupTg.Row(models.BtnBackTg, models.BtnHomeTg),
 	)
 
+	models.OperatorMenuMarkup.Reply(
+		models.OperatorMenuMarkup.Row(models.OperatorMenuBtn),
+	)
+
 	models.PlanStatusMarkupRu.Inline(
 		models.PlanStatusMarkupRu.Row(models.BtnPlanStatusLimitRu, models.BtnPlanStatusUnlimitRu),
 	)

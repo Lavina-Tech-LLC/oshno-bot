@@ -8,19 +8,20 @@ import (
 
 type (
 	User struct {
-		PhoneNumber       string
-		TelegramUserId    int64
-		TelegramChatId    int64
-		Nickname          string
-		Language          string
-		FullName          string
-		UserPhase         int
-		Role              string
-		AIChatId          string
-		AILastMessageTime *time.Time
-		AIConfirmSended   bool `gorm:"default:true"`
-		Topics            []Topic
-		ActiveTopic       int32
+		PhoneNumber            string
+		TelegramUserId         int64
+		TelegramChatId         int64
+		Nickname               string
+		Language               string
+		FullName               string
+		UserPhase              int
+		Role                   string
+		AIChatId               string
+		AILastMessageTime      *time.Time
+		AIConfirmSended        bool `gorm:"default:true"`
+		Topics                 []Topic
+		ActiveTopic            int32
+		OpertorLastMessageTime *time.Time
 		gorm.Model
 	}
 
@@ -64,7 +65,7 @@ type (
 
 	OperatorChat struct {
 		Message  string
-		TopicId  string
+		TopicId  int32
 		Topic    Topic
 		Operator string
 		gorm.Model

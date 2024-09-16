@@ -94,7 +94,7 @@ func (h BotHandler) OperatorSupport(languageCode string) func(c tele.Context) er
 		}
 
 		h.logger.Info("operator support finished")
-		return c.Send("Здравствуйте, опишите пожалуйста вашу проблему, оператор скоро свяжеться с вами?")
+		return c.Send("Здравствуйте, опишите пожалуйста вашу проблему, оператор скоро свяжеться с вами?", models.OperatorMenuMarkup)
 	}
 }
 

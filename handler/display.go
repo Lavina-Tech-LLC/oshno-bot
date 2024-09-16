@@ -3,6 +3,7 @@ package handler
 import (
 	"oshno/models"
 	"oshno/pkg/constants"
+	"time"
 
 	"go.uber.org/zap"
 	tele "gopkg.in/telebot.v3"
@@ -319,6 +320,14 @@ func (h BotHandler) Menu() func(c tele.Context) error {
 		err = h.storage.UpdatePhase(user.ID, 0)
 		if err != nil {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		if user.ActiveTopic != 0 {
+			now := time.Now()
+			err := h.storage.UpdateUser(user.ID, models.User{ActiveTopic: 0, OpertorLastMessageTime: &now})
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
 		}
 
 		switch user.Language {
