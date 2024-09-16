@@ -111,6 +111,7 @@ const (
 
 const (
 	TelegramGroupId = -1002004240567
+	OperatorChatId  = -1002413165254
 )
 
 const (

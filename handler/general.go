@@ -347,7 +347,7 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			c.Send(data.Data)
 		case int(constants.PhaseOperatorSupport):
 			// send to topic
-			err := gateways.SendMessageToTopic(int64(user.ActiveTopic), message)
+			err := gateways.SendMessageToTopic(int64(user.ActiveTopic), "Клиент: "+message)
 			if err != nil {
 				h.logger.Error("error in send message to operator group: ", zap.Error(err))
 			}
@@ -590,13 +590,6 @@ func (h BotHandler) OperatorMessages(c tele.Context) error {
 	topicId := c.Message().ThreadID
 
 	h.logger.Info("operator answered message: ", zap.String("message", message))
-
-	if message == "/stop" {
-		h.Stop(c)
-		gateways.SendMessageToTopic(int64(topicId), "Вы закрыли чат с килентом")
-		return nil
-	}
-
 	user, err := h.storage.GetUserInActiveTopic(topicId)
 	if err != nil {
 		return nil
@@ -617,6 +610,6 @@ func (h BotHandler) OperatorMessages(c tele.Context) error {
 		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 	}
 
-	c.Bot().Send(&tele.User{ID: user.TelegramUserId}, message)
+	c.Bot().Send(&tele.User{ID: user.TelegramUserId}, "🧑‍💻Оператор: "+message)
 	return nil
 }

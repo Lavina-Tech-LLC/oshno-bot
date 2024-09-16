@@ -38,7 +38,7 @@ func Start(h BotHandler) {
 	adminOnly := h.bot.Group()
 	adminOnly.Use(tgMiddleware.Whitelist(getAdmins()...))
 	h.bot.Handle("/start", h.Start)
-	h.bot.Handle("/stop", h.Start)
+	h.bot.Handle("/stop", h.Stop)
 	adminOnly.Handle("/admin", h.Admin)
 	adminOnly.Handle(&models.BtnConfirmAd, h.SendAd)
 	adminOnly.Handle(&models.BtnIgnoreAd, h.UnsendAd)

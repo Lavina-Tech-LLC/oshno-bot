@@ -3,6 +3,7 @@ package handler
 import (
 	"oshno/models"
 	"oshno/pkg/constants"
+	"oshno/pkg/gateways"
 	"time"
 
 	"go.uber.org/zap"
@@ -345,15 +346,16 @@ func (h BotHandler) Menu() func(c tele.Context) error {
 }
 
 func (h BotHandler) Stop(c tele.Context) error {
-	h.logger.Info("bot started")
 	if c.Message().TopicMessage {
-		threadId := c.Message().ThreadID
-		topic, err := h.storage.GetTopicByThreadId(int32(threadId))
+
+		topicId := c.Message().ThreadID
+		topic, err := h.storage.GetTopicByThreadId(int32(topicId))
 		if err != nil {
 			return err
 		}
 
-		if topic.User.ActiveTopic == int32(threadId) {
+		if topic.User.ActiveTopic == int32(topicId) {
+			gateways.SendMessageToTopic(int64(topicId), "Вы закрыли чат с килентом!")
 			h.bot.Send(&tele.User{ID: topic.User.TelegramUserId}, "Была ли информация полезной?", models.OperatorConfirmMarkup)
 		}
 	}

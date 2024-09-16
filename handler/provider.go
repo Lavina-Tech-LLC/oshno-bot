@@ -99,8 +99,43 @@ func (h BotHandler) OperatorSupport(languageCode string) func(c tele.Context) er
 }
 
 func (h BotHandler) OperatorConfirm(q string) func(c tele.Context) error {
-	fmt.Println("confirm message", q)
-	return nil
+
+	return func(c tele.Context) error {
+		user, err := h.storage.GetUserByTgId(c.Sender().ID)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+		var sendMessage string
+		var clientMessage string
+
+		topic, err := h.storage.GetTopicByThreadId(user.ActiveTopic)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		if q == "yes" {
+			sendMessage = "Клиент смог решить проблему с помощью оператора. Топик: " + topic.Name
+			clientMessage = "Спасибо за ваш отзыв, Мы рады что смогли вам помочь!"
+		} else {
+			sendMessage = "Клиент не смог решить проблему с помощью оператора, Вся переписка сохранена в топике: " + topic.Name
+			clientMessage = "Спасибо за ваш отзыв, Мы постараемя улучшить наш сервис!"
+
+		}
+
+		h.bot.Send(&tele.Chat{ID: constants.OperatorChatId}, sendMessage)
+
+		err = h.storage.UpdatePhase(user.ID, 0)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		err = h.storage.UpdateActiveTopic(user.ID, 0)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		return c.Send(clientMessage, models.MenuMarkupRu)
+	}
 }
 
 func (h BotHandler) AIConfirm(q string) func(c tele.Context) error {
