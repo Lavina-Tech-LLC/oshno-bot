@@ -58,6 +58,86 @@ func (h BotHandler) TechnicalSupport(languageCode string) func(c tele.Context) e
 	}
 }
 
+func (h BotHandler) OperatorSupport(languageCode string) func(c tele.Context) error {
+
+	return func(c tele.Context) error {
+		user, err := h.storage.GetUserByTgId(c.Sender().ID)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+		h.logger.Info("operator support started", zap.String("username", user.FullName))
+		topicName := uuid.New().String()
+
+		// create topics
+		topic, err := gateways.CreateForumTopic(topicName)
+		if err != nil {
+			fmt.Println("failed create topic: ", err.Error())
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		_, err = h.storage.CreateTopic(models.Topic{Name: topicName, ThreadId: topic.Result.ThreadId, UserId: user.ID})
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		// send user data to operator topic
+		gateways.SendMessageToTopic(int64(topic.Result.ThreadId), fmt.Sprintf("Полное Имя: %s\nТелефон номер: %s\nЮзернейм: @%s", user.FullName, user.PhoneNumber, user.Nickname))
+
+		err = h.storage.UpdatePhase(user.ID, int(constants.PhaseOperatorSupport))
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		err = h.storage.UpdateUser(user.ID, models.User{ActiveTopic: topic.Result.ThreadId})
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		h.logger.Info("operator support finished")
+		return c.Send("Здравствуйте, опишите пожалуйста вашу проблему, оператор скоро свяжеться с вами?", models.OperatorMenuMarkup)
+	}
+}
+
+func (h BotHandler) OperatorConfirm(q string) func(c tele.Context) error {
+
+	return func(c tele.Context) error {
+		user, err := h.storage.GetUserByTgId(c.Sender().ID)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+		var sendMessage string
+		var clientMessage string
+
+		topic, err := h.storage.GetTopicByThreadId(user.ActiveTopic)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		if q == "yes" {
+			sendMessage = "Клиент смог решить проблему с помощью оператора. Топик: " + topic.Name
+			clientMessage = "Спасибо за ваш отзыв, Мы рады что смогли вам помочь!"
+		} else {
+			sendMessage = "Клиент не смог решить проблему с помощью оператора, Вся переписка сохранена в топике: " + topic.Name
+			clientMessage = "Спасибо за ваш отзыв, Мы постараемя улучшить наш сервис!"
+
+		}
+
+		h.bot.Send(&tele.Chat{ID: constants.OperatorChatId}, sendMessage)
+
+		err = h.storage.UpdatePhase(user.ID, 0)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		err = h.storage.UpdateActiveTopic(user.ID, 0)
+		if err != nil {
+			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+		}
+
+		return c.Send(clientMessage, models.MenuMarkupRu)
+	}
+}
+
 func (h BotHandler) AIConfirm(q string) func(c tele.Context) error {
 	return func(c tele.Context) error {
 		h.logger.Info("AI confirm")

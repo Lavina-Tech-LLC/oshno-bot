@@ -15,6 +15,8 @@ func Migrate() {
 		&models.Request{},
 		&models.ChangePlanRequest{},
 		&models.AddPlanRequest{},
+		&models.OperatorChat{},
+		&models.Topic{},
 	)
 
 	if err != nil {

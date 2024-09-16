@@ -35,6 +35,7 @@ type cronConfigurations struct {
 
 type telegramConfigurations struct {
 	TelegramToken string
+	OpertorChatId int64
 }
 
 type serverConfigurations struct {

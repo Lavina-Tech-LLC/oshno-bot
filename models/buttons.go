@@ -44,6 +44,7 @@ var (
 
 	BtnRequestProviderRu  tele.Btn
 	BtnTechnicalSupportRu tele.Btn
+	BtnOperatorSupportRu  tele.Btn
 )
 
 var (
@@ -185,6 +186,13 @@ var (
 )
 
 var (
+	OperatorConfirmMarkup *tele.ReplyMarkup
+
+	BtnOperatorConfirmYes tele.Btn
+	BtnOperatorConfirmNo  tele.Btn
+)
+
+var (
 
 	// share phone russian
 	PhoneFillMarkup   *tele.ReplyMarkup
@@ -192,4 +200,9 @@ var (
 
 	BtnShareFillPhone   tele.Btn
 	BtnShareFillPhoneTg tele.Btn
+)
+
+var (
+	OperatorMenuMarkup *tele.ReplyMarkup
+	OperatorMenuBtn    tele.Btn
 )

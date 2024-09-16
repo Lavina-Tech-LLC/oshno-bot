@@ -38,6 +38,7 @@ func Start(h BotHandler) {
 	adminOnly := h.bot.Group()
 	adminOnly.Use(tgMiddleware.Whitelist(getAdmins()...))
 	h.bot.Handle("/start", h.Start)
+	h.bot.Handle("/stop", h.Stop)
 	adminOnly.Handle("/admin", h.Admin)
 	adminOnly.Handle(&models.BtnConfirmAd, h.SendAd)
 	adminOnly.Handle(&models.BtnIgnoreAd, h.UnsendAd)
@@ -51,6 +52,7 @@ func Start(h BotHandler) {
 
 	h.bot.Handle(&models.BtnRequestProviderRu, h.RequestProvider)
 	h.bot.Handle(&models.BtnTechnicalSupportRu, h.TechnicalSupport(constants.Russian))
+	h.bot.Handle(&models.BtnOperatorSupportRu, h.OperatorSupport(constants.Russian))
 
 	h.bot.Handle(&models.BtnRequestProviderTg, h.RequestProvider)
 	h.bot.Handle(&models.BtnTechnicalSupportTg, h.TechnicalSupport(constants.Tajik))
@@ -136,6 +138,9 @@ func Start(h BotHandler) {
 	h.bot.Handle(&models.BtnPlanStatusLimitToj, h.PlanLimit())
 	h.bot.Handle(&models.BtnPlanStatusUnlimitToj, h.PlanUnlimit())
 
+	h.bot.Handle(&models.BtnOperatorConfirmYes, h.OperatorConfirm("yes"))
+	h.bot.Handle(&models.BtnOperatorConfirmNo, h.OperatorConfirm("no"))
+
 	h.bot.Handle(tele.OnText, h.Text(constants.Russian))
 	h.bot.Handle(tele.OnLocation, h.Location)
 	go func() {
@@ -175,6 +180,7 @@ func setButtons() {
 
 	models.MenuMarkupRu.Reply(
 		models.MenuMarkupRu.Row(models.BtnRequestProviderRu, models.BtnTechnicalSupportRu),
+		models.MenuMarkupRu.Row(models.BtnOperatorSupportRu),
 	)
 
 	models.MenuMarkupTg.Reply(
@@ -256,12 +262,20 @@ func setButtons() {
 		models.AIConfirmMarkupTg.Row(models.BtnAIConfirmYesTg, models.BtnAIConfirmNoTg),
 	)
 
+	models.OperatorConfirmMarkup.Reply(
+		models.OperatorConfirmMarkup.Row(models.BtnOperatorConfirmYes, models.BtnOperatorConfirmNo),
+	)
+
 	models.DisplayMarkupRu.Reply(
 		models.DisplayMarkupRu.Row(models.BtnBackRu, models.BtnHomeRu),
 	)
 
 	models.DisplayMarkupTg.Reply(
 		models.DisplayMarkupTg.Row(models.BtnBackTg, models.BtnHomeTg),
+	)
+
+	models.OperatorMenuMarkup.Reply(
+		models.OperatorMenuMarkup.Row(models.OperatorMenuBtn),
 	)
 
 	models.PlanStatusMarkupRu.Inline(

@@ -25,6 +25,8 @@ func InitAllButtons() {
 	InitDisplay()
 	InitPlanStatus()
 	InitPhoneFill()
+	InitOperatorMenu()
+	InitOperatorConfirmButton()
 }
 
 // restart button
@@ -73,6 +75,13 @@ func InitConfirmButton() {
 	BtnIgnoreAd = ConfirmAdMarkup.Data("Нет", "no_confirm_ad")
 }
 
+func InitOperatorConfirmButton() {
+	OperatorConfirmMarkup = &tele.ReplyMarkup{ResizeKeyboard: true}
+
+	BtnOperatorConfirmYes = OperatorConfirmMarkup.Text(fmt.Sprintf("%sДа", "👍"))
+	BtnOperatorConfirmNo = OperatorConfirmMarkup.Text("👎Нет")
+}
+
 // inline language buttons
 func InitLanguage() {
 	LanguageMarkup = &tele.ReplyMarkup{
@@ -97,6 +106,7 @@ func InitMenu() {
 
 	BtnRequestProviderRu = MenuMarkupRu.Text(fmt.Sprintf("%s Оставить запрос на провайдера", emoji.InboxTray))
 	BtnTechnicalSupportRu = MenuMarkupRu.Text(fmt.Sprintf("%s Tехническая подержка", emoji.ManTechnologist))
+	BtnOperatorSupportRu = MenuMarkupRu.Text(fmt.Sprintf("%s Связаться с оператором", emoji.WritingHand))
 
 }
 
@@ -281,4 +291,13 @@ func InitPhoneFill() {
 
 	BtnShareFillPhone = PhoneMarkup.Contact("Поделиться с контактом")
 	BtnShareFillPhoneTg = PhoneMarkup.Contact("Телефонро мубодила кунед")
+}
+
+func InitOperatorMenu() {
+	// operator menu
+	OperatorMenuMarkup = &tele.ReplyMarkup{
+		ResizeKeyboard: true,
+	}
+
+	OperatorMenuBtn = OperatorMenuMarkup.Text(fmt.Sprintf("%sМеню", emoji.House))
 }

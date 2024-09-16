@@ -144,6 +144,11 @@ func (h BotHandler) LanguageButton(languageCode string) func(c tele.Context) err
 
 func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 	return func(c tele.Context) error {
+		if c.Message().TopicMessage {
+			err := h.OperatorMessages(c)
+			return err
+		}
+
 		user, err := h.storage.GetUserByTgId(c.Sender().ID)
 		if user.ID == 0 {
 			return nil
@@ -152,7 +157,7 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 		message := strings.TrimSpace(c.Message().Text)
-		if len(message) > 150 && user.UserPhase != 30 {
+		if len(message) > 150 && user.UserPhase != 30 && user.UserPhase != int(constants.PhaseOperatorSupport) {
 			switch user.Language {
 			case constants.Tajik:
 				return c.Send("Паёми шумо хеле дароз аст! Бори дигар кӯшиш кунед, танҳо онро каме содда кунед")
@@ -340,6 +345,16 @@ func (h BotHandler) Text(languageCode string) func(c tele.Context) error {
 			}
 
 			c.Send(data.Data)
+		case int(constants.PhaseOperatorSupport):
+			// send to topic
+			err := gateways.SendMessageToTopic(int64(user.ActiveTopic), "Клиент: "+message)
+			if err != nil {
+				h.logger.Error("error in send message to operator group: ", zap.Error(err))
+			}
+
+			topic, _ := h.storage.GetTopicByThreadId(user.ActiveTopic)
+			h.storage.CreateTopicMessage(models.OperatorChat{Message: message, TopicId: int32(topic.ID), Operator: ""})
+			return err
 		}
 
 		return nil
@@ -568,4 +583,33 @@ func newRequestMessageToGroup(rq models.Request) string {
 		plan,
 	)
 
+}
+
+func (h BotHandler) OperatorMessages(c tele.Context) error {
+	message := c.Message().Text
+	topicId := c.Message().ThreadID
+
+	h.logger.Info("operator answered message: ", zap.String("message", message))
+	user, err := h.storage.GetUserInActiveTopic(topicId)
+	if err != nil {
+		return nil
+	}
+
+	if user.ID == 0 {
+
+		gateways.SendMessageToTopic(int64(topicId), "Клиент уже закрыл чат и не получил ваш ответ!")
+		return nil
+	}
+
+	topic, _ := h.storage.GetTopicByThreadId(int32(topicId))
+	h.storage.CreateTopicMessage(models.OperatorChat{Message: message, TopicId: int32(topic.ID), Operator: c.Message().Sender.Username})
+
+	now := time.Now()
+	err = h.storage.UpdateUser(user.ID, models.User{OpertorLastMessageTime: &now})
+	if err != nil {
+		return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+	}
+
+	c.Bot().Send(&tele.User{ID: user.TelegramUserId}, "🧑‍💻Оператор: "+message)
+	return nil
 }

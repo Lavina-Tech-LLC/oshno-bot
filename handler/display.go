@@ -3,6 +3,8 @@ package handler
 import (
 	"oshno/models"
 	"oshno/pkg/constants"
+	"oshno/pkg/gateways"
+	"time"
 
 	"go.uber.org/zap"
 	tele "gopkg.in/telebot.v3"
@@ -321,6 +323,19 @@ func (h BotHandler) Menu() func(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
 		}
 
+		if user.ActiveTopic != 0 {
+			now := time.Now()
+			err := h.storage.UpdateUser(user.ID, models.User{ActiveTopic: 0, OpertorLastMessageTime: &now})
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
+
+			err = h.storage.UpdateActiveTopic(user.ID, 0)
+			if err != nil {
+				return c.Send(constants.ConstMessages[constants.Russian][constants.ErrorReport], models.StartMarkup)
+			}
+		}
+
 		switch user.Language {
 		case constants.Tajik:
 			return c.Send(constants.ConstMessages[constants.Tajik][constants.MenuButtonText], models.MenuMarkupTg)
@@ -328,4 +343,22 @@ func (h BotHandler) Menu() func(c tele.Context) error {
 			return c.Send(constants.ConstMessages[constants.Russian][constants.MenuButtonText], models.MenuMarkupRu)
 		}
 	}
+}
+
+func (h BotHandler) Stop(c tele.Context) error {
+	if c.Message().TopicMessage {
+
+		topicId := c.Message().ThreadID
+		topic, err := h.storage.GetTopicByThreadId(int32(topicId))
+		if err != nil {
+			return err
+		}
+
+		if topic.User.ActiveTopic == int32(topicId) {
+			gateways.SendMessageToTopic(int64(topicId), "Вы закрыли чат с килентом!")
+			h.bot.Send(&tele.User{ID: topic.User.TelegramUserId}, "Была ли информация полезной?", models.OperatorConfirmMarkup)
+		}
+	}
+
+	return nil
 }

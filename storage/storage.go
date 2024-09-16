@@ -79,6 +79,15 @@ func (s *Storage) UpdatePhase(id uint, phase int) error {
 	return nil
 }
 
+func (s *Storage) UpdateActiveTopic(id uint, topic int) error {
+	err := s.db.Model(&models.User{}).Where("id = ?", id).Update("active_topic", topic).Error
+	if err != nil {
+		s.log.Error("update language failed", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
 func (s *Storage) UpdateAIChatId(id uint, chatId string) error {
 	err := s.db.Model(&models.User{}).Where("id = ?", id).Update("ai_chat_id", chatId).Error
 	if err != nil {
@@ -213,4 +222,50 @@ func (s *Storage) GetAllUsersAINotConfirmed() ([]models.User, error) {
 		return users, err
 	}
 	return users, nil
+}
+
+func (s *Storage) CreateTopic(req models.Topic) (models.Topic, error) {
+	err := s.db.Create(&req).Error
+	if err != nil {
+
+		s.log.Error("error in create error", zap.Error(err))
+		return models.Topic{}, err
+	}
+
+	return req, nil
+}
+
+func (s *Storage) GetUserInActiveTopic(topicId int) (models.User, error) {
+	var user models.User
+	err := s.db.Model(&models.User{}).Where("active_topic = ?", topicId).Find(&user).Error
+	if err != nil {
+
+		s.log.Error("error in get user with active topic: ", zap.Error(err))
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (s *Storage) CreateTopicMessage(message models.OperatorChat) error {
+	err := s.db.Create(&message).Error
+	if err != nil {
+
+		s.log.Error("error in create operator chat: ", zap.Error(err))
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) GetTopicByThreadId(topicId int32) (models.Topic, error) {
+	var topic models.Topic
+	err := s.db.Model(&models.Topic{}).Preload("User").Where("thread_id = ?", topicId).Find(&topic).Error
+	if err != nil {
+
+		s.log.Error("error in getting topic", zap.Error(err))
+		return topic, err
+	}
+
+	return topic, nil
 }

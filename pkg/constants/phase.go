@@ -9,3 +9,7 @@ var OshnoBot = BotActions{
 		FullNameInput: 1,
 	},
 }
+
+const (
+	PhaseOperatorSupport int32 = 40
+)
